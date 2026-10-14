@@ -535,17 +535,31 @@ Key things to explain when presenting results (they're also in the report):
   perfect-match site is a candidate on-target. Flag this prominently — it usually means pick a
   different guide.
 - A MAF of `1e-05` is a display floor ("present, frequency ~0"), not a measurement.
-- **Population-level runs report one worst-case representative per site** — so the
+- **Population-level runs report one worst-case representative per site**, so the
   *per-population site totals* are upper bounds (measured ~1.5x the `--per-sample` totals). Be
-  precise about what that does and does not cover, because it is easy to over-apply:
-  - **A single-variant site's `Observed` carrier count is exact in both modes** — verified
-    identical on every shared validation-panel site across a population-level and a
-    `--per-sample` run of the same guide. Don't hedge it as an upper bound.
-  - What `--per-sample` actually adds: CONFIRMED cis phasing for **multi-variant** sites (which
-    otherwise all stay `putative`), the named carrier samples, exact joint allele frequency, and
-    meaningful `summary_by_samples` per-person totals.
-  - So "which individuals carry this exact off-target?" needs `--per-sample`; "how many people
-    carry this one variant?" does not.
+  precise about what that does and does not cover — this is easy to get wrong in both directions:
+  - **Carrier counts are NOT mode-dependent.** The `Observed` column counts the row's `Samples`
+    field, which is a genotype lookup of the contributing variant(s) against the genotype store
+    that ships with the index. Verified: identical on all 95 shared validation-panel sites of a
+    population-level and a `--per-sample` run of the same guide, down to the same sample roster.
+    So don't hedge a carrier count as an upper bound just because the run was population-level.
+  - **What the count means depends on how many variants the site needs.** For a **single-variant**
+    site it is exactly "N people carry this off-target". For a site needing **two or more**
+    variants it means "N people carry those variants" — it does *not* prove the variants sit on
+    the same chromosome copy in any of them, so it is an upper bound on who actually has the site.
+    Say which kind it is; the `Variant` column shows the count. (In one real panel, 30 of 101
+    sites were multi-variant, one reading "4,021 carriers" of 4,091 people — plainly a
+    constituent-variant count, not 4,021 people with that off-target.)
+  - **Cis proof lives in `snp_snp_cooc.tsv`'s `Phase` column, and that is what `--per-sample`
+    buys.** Measured on the same guide and panel: population-level gave 102,749 SNP+SNP
+    co-occurrences, every one `PUTATIVE`; `--per-sample` gave 16,943, of which 7,596 `CONFIRMED`.
+    The total drops because per-sample enumerates only haplotypes real people carry instead of
+    worst-case combinations.
+  - So: "how many people carry this single variant?" needs no re-run. "Do these two variants
+    actually occur together in one person, and who?" needs `--per-sample`.
+  - Note upstream's own banner at the start of a population-level run says "Per-sample carriers,
+    CONFIRMED cis phasing and exact joint AF are NOT computed". For carriers that is misleading —
+    single-variant rosters are computed and named. Read it as applying to cis phasing.
 
 For a quick terminal summary, `scripts/analyze_results.py` reads a `Results/<name>/` folder:
 ```bash
