@@ -535,10 +535,17 @@ Key things to explain when presenting results (they're also in the report):
   perfect-match site is a candidate on-target. Flag this prominently — it usually means pick a
   different guide.
 - A MAF of `1e-05` is a display floor ("present, frequency ~0"), not a measurement.
-- **Population-level runs report one worst-case representative per site.** `Observed` still
-  shows how many panel members carry a site's variant, but multi-variant combinations stay
-  `putative` and per-person haplotypes aren't resolved — use `--per-sample` when the question is
-  "which individuals carry this exact off-target?"
+- **Population-level runs report one worst-case representative per site** — so the
+  *per-population site totals* are upper bounds (measured ~1.5x the `--per-sample` totals). Be
+  precise about what that does and does not cover, because it is easy to over-apply:
+  - **A single-variant site's `Observed` carrier count is exact in both modes** — verified
+    identical on every shared validation-panel site across a population-level and a
+    `--per-sample` run of the same guide. Don't hedge it as an upper bound.
+  - What `--per-sample` actually adds: CONFIRMED cis phasing for **multi-variant** sites (which
+    otherwise all stay `putative`), the named carrier samples, exact joint allele frequency, and
+    meaningful `summary_by_samples` per-person totals.
+  - So "which individuals carry this exact off-target?" needs `--per-sample`; "how many people
+    carry this one variant?" does not.
 
 For a quick terminal summary, `scripts/analyze_results.py` reads a `Results/<name>/` folder:
 ```bash

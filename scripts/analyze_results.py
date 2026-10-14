@@ -497,8 +497,9 @@ def main():
         if any(v for k, v in pops.items() if k != "REF"):
             print("Off-target site totals by population (REF = reference genome, no variant needed):")
             if not per_sample:
-                print("  (population-level run: these are worst-case upper bounds -- typically ~1.5x the"
-                      " --per-sample counts)")
+                print("  (population-level run: these per-population SITE TOTALS are worst-case upper"
+                      " bounds -- measured ~1.5x the --per-sample totals. Per-site 'Observed'"
+                      " carrier counts are NOT inflated: they are identical in both modes.)")
             for pop, total in sorted(pops.items(), key=lambda kv: -kv[1]):
                 print(f"  {pop}: {total}")
             print()
