@@ -1,6 +1,6 @@
 Genome_selected	hg38
 Genome_ref	hg38
-Genome_idx	NRG_2_hg38+hg38_1000G2021
+Genome_idx	NRG_2_hg38+hg38_HGDP1kGP
 Pam	NRG
 Max_bulges	1
 Mismatches	4

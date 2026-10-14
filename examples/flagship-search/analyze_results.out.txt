@@ -1,58 +1,62 @@
-=== CRISPRme results summary: pop-1000G2021-1013 ===
+=== CRISPRme results summary: CTAACAGT-HGDP1kGP-1014 ===
 Guide: CTAACAGTTGCTTTTATCACNNN   Counts ranked by: CFD
 CRISPRme version: 2.7.9
 Analysis: variant-aware, population-level default (worst-case representative per site; per-person haplotypes not resolved)
-Variant panel: 1000G2021 (3202 people)
+Variant panel: HGDP1kGP (4091 people)
 Search depth: 4 mismatches, 1 DNA / 1 RNA bulges, max 6 total edits
 Nuclease/PAM: SpCas9 / NRG
 
-Total off-target sites: 148567
-  found only because of a population variant (absent from the reference genome): 46502
-  where a variant creates a brand-new PAM site: 4843
-Breakdown by mismatch/bulge count:
+Total off-target sites: 205415   (CRISPRme's report; excludes the on-target)
+  created by a population variant, absent from the reference genome: 97879 (48% of off-targets)
+  where a variant creates a brand-new PAM site: 10837
+Breakdown by mismatch/bulge count (from the per-guide summary table, which counts variant targets by a slightly different rule):
   0 mismatch(es), bulge size 0 (no bulge): 1 sites (0 variant-only)
-  1 mismatch(es), bulge size 1 (RNA bulge): 1 sites (0 variant-only)
-  1 mismatch(es), bulge size 2 (RNA,DNA bulge): 4 sites (3 variant-only)
-  2 mismatch(es), bulge size 1 (DNA bulge): 1 sites (0 variant-only)
-  2 mismatch(es), bulge size 1 (RNA bulge): 34 sites (11 variant-only)
-  2 mismatch(es), bulge size 2 (RNA,DNA bulge): 200 sites (42 variant-only)
-  3 mismatch(es), bulge size 0 (no bulge): 6 sites (2 variant-only)
-  3 mismatch(es), bulge size 1 (DNA bulge): 74 sites (24 variant-only)
-  3 mismatch(es), bulge size 1 (RNA bulge): 458 sites (152 variant-only)
-  3 mismatch(es), bulge size 2 (RNA,DNA bulge): 4694 sites (1123 variant-only)
-  4 mismatch(es), bulge size 0 (no bulge): 62 sites (15 variant-only)
-  4 mismatch(es), bulge size 1 (DNA bulge): 2161 sites (787 variant-only)
-  4 mismatch(es), bulge size 1 (RNA bulge): 10379 sites (3412 variant-only)
-  4 mismatch(es), bulge size 2 (RNA,DNA bulge): 130492 sites (40931 variant-only)
+  0 mismatch(es), bulge size 2 (RNA,DNA bulge): 1 sites (1 variant-only)
+  1 mismatch(es), bulge size 1 (RNA bulge): 2 sites (1 variant-only)
+  1 mismatch(es), bulge size 2 (RNA,DNA bulge): 7 sites (6 variant-only)
+  2 mismatch(es), bulge size 0 (no bulge): 2 sites (2 variant-only)
+  2 mismatch(es), bulge size 1 (DNA bulge): 2 sites (1 variant-only)
+  2 mismatch(es), bulge size 1 (RNA bulge): 40 sites (19 variant-only)
+  2 mismatch(es), bulge size 2 (RNA,DNA bulge): 303 sites (152 variant-only)
+  3 mismatch(es), bulge size 0 (no bulge): 8 sites (5 variant-only)
+  3 mismatch(es), bulge size 1 (DNA bulge): 117 sites (71 variant-only)
+  3 mismatch(es), bulge size 1 (RNA bulge): 630 sites (343 variant-only)
+  3 mismatch(es), bulge size 2 (RNA,DNA bulge): 6280 sites (2951 variant-only)
+  4 mismatch(es), bulge size 0 (no bulge): 84 sites (43 variant-only)
+  4 mismatch(es), bulge size 1 (DNA bulge): 3165 sites (1885 variant-only)
+  4 mismatch(es), bulge size 1 (RNA bulge): 14971 sites (8403 variant-only)
+  4 mismatch(es), bulge size 2 (RNA,DNA bulge): 179803 sites (95056 variant-only)
 
 On-target: exactly one perfect match (the presumed on-target site).
 
 Off-target site totals by population (REF = reference genome, no variant needed):
   (population-level run: these are worst-case upper bounds -- typically ~1.5x the --per-sample counts)
-  REF: 102065
-  AFR: 30270
-  AMR: 23225
-  SAS: 20019
-  EUR: 18759
-  EAS: 16815
+  REF: 96477
+  AFR: 56733
+  CSA: 41537
+  EAS: 38868
+  AMR: 35288
+  EUR: 34718
+  MID: 23696
+  OCE: 9977
 
-SNP+indel co-occurrence off-targets (need two variants together): 326 (CONFIRMED 312, PUTATIVE 14)
-SNP+SNP co-occurrence off-targets (need two variants together): 102749 (PUTATIVE 102749)
+SNP+indel co-occurrence off-targets (need two variants together): 642 (CONFIRMED 632, PUTATIVE 10)
+SNP+SNP co-occurrence off-targets (need two variants together): 342396 (PUTATIVE 342396)
   (CONFIRMED = phasing proves both variants sit on one chromosome copy in a real person; PUTATIVE = possible but unproven -- population-level runs report every SNP+SNP case as PUTATIVE; --per-sample resolves them)
 
 Per-person carrier counts: not available -- this was a population-level run. Re-run with --per-sample (genotyped index) to get named carriers.
 
 Recommended validation panel: 101 sites (data/panel_top100.tsv in the report zip). Top 10:
     1. chr2:60495260(-)  0mm+0b  CFD=1.0000  CRISPR-Bulge=1.0000  Observed=reference  BCL11A/intron  [PERFECT MATCH; cancer-driver gene]
-    2. chr2:210530658(-)  2mm+1b  CFD=0.9470  CRISPR-Bulge=0.9870  Observed=96 carriers  CPS1/intron  [variant chr2;210530659;G;C]
-    3. chr2:161236052(-)  1mm+1b  CFD=0.0600  CRISPR-Bulge=0.0000  Observed=reference  TANK/exon
-    4. chr12:104862518(-)  2mm+1b  CFD=0.7700  CRISPR-Bulge=0.0100  Observed=87 carriers  SLC41A2/intron  [variant chr12;104862537;A;G]
-    5. chr6:29968284(-)  1mm+2b  CFD=0.7270  CRISPR-Bulge=0.0500  Observed=484 carriers  HLA-A/intergenic  [variant chr6;29968288;C;T]
-    6. chr10:33753323(-)  3mm+1b  CFD=0.7110  CRISPR-Bulge=0.3200  Observed=reference  PARD3/intergenic
-    7. chr2:88860629(-)  4mm+2b  CFD=0.7640  CRISPR-Bulge=0.0000  Observed=105 carriers  RPIA/intergenic  [variant chr2;88860632;C;T,chr2;88860633;T;C (+6 more)]
-    8. chr9:106422499(-)  4mm+2b  CFD=0.7590  CRISPR-Bulge=0.0010  Observed=3 carriers  ZNF462/intergenic  [variant chr9;106422519;A;T]
-    9. chr9:62569239(+)  3mm+1b  CFD=0.6600  CRISPR-Bulge=0.0050  Observed=8 carriers  AL391987.2/intergenic  [variant chr9;62569257;G;A]
-   10. chr9:66603750(+)  3mm+1b  CFD=0.6600  CRISPR-Bulge=0.0050  Observed=2 carriers  ZNF658/intergenic  [variant chr9;66603768;G;A]
-  Panel sites by gene region: intergenic 57, intron 33, - 7, exon 3, CDS 1
+    2. chr2:210530658(-)  2mm+1b  CFD=0.9470  CRISPR-Bulge=0.9870  Observed=111 carriers  CPS1/intron  [variant chr2;210530659;G;C (rs114518452)]
+    3. chr22:22720942(+)  0mm+2b  CFD=0.3890  CRISPR-Bulge=0.0040  Observed=1 carrier  GGTLC2/intergenic  [variant chr22;22720961;AAG;A]
+    4. chr4:177401725(+)  2mm+0b  CFD=0.2610  CRISPR-Bulge=0.1210  Observed=5 carriers  AGA/intergenic  [variant chr4;177401733;C;T,chr4;177401742;G;T (rs189308020,rs556244870)]
+    5. chr13:30199212(-)  2mm+0b  CFD=0.1330  CRISPR-Bulge=0.0050  Observed=1 carrier  KATNAL1/intergenic  [variant chr13;30199226;T;C (rs1455874593)]
+    6. chr2:161236052(-)  1mm+1b  CFD=0.0600  CRISPR-Bulge=0.0000  Observed=reference  TANK/exon
+    7. chr13:106090756(-)  1mm+1b  CFD=0.0160  CRISPR-Bulge=0.0000  Observed=1 carrier  EFNB2/intergenic  [variant chr13;106090776;C;T]
+    8. chr14:105863156(+)  2mm+2b  CFD=0.8080  CRISPR-Bulge=0.3690  Observed=1 carrier  TMEM121/intergenic  [variant chr14;105863157;G;GCAA]
+    9. chr12:104862518(-)  2mm+1b  CFD=0.7700  CRISPR-Bulge=0.0100  Observed=94 carriers  SLC41A2/intron  [variant chr12;104862537;A;G (rs116736800)]
+   10. chr10:33753323(-)  3mm+1b  CFD=0.7110  CRISPR-Bulge=0.3200  Observed=reference  PARD3/intergenic
+  Panel sites by gene region: intergenic 52, intron 37, exon 6, - 5, CDS 1
 
-Full report: Results/pop-1000G2021-1013/pop-1000G2021-1013_report.zip -> unzip, open report.html (shareable, works offline)
+Full report: Results/CTAACAGT-HGDP1kGP-1014/CTAACAGT-HGDP1kGP-1014_report.zip -> unzip, open report.html (shareable, works offline)

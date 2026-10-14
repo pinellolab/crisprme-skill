@@ -461,11 +461,27 @@ def main():
         guide_rows, total = read_summary_by_guide(summary_guide_path)
         variant_only = sum(int(r["Variant"]) for r in guide_rows)
         pam_created = sum(int(r["PAM Creation"]) for r in guide_rows)
-        print(f"Total off-target sites: {total}")
+        # Headline counts come from CRISPRme's own run manifest when it exists, so this summary
+        # agrees with report.html. The per-guide summary table classifies variant targets
+        # slightly differently, so its per-class "variant-only" figures sum a little higher --
+        # hence the note below rather than two competing totals.
+        counts = (manifest.get("counts") or {}) if manifest else {}
+        report_total = counts.get("off_targets")
+        report_variant = counts.get("variant_created_off_targets")
+        if report_total is not None:
+            print(f"Total off-target sites: {report_total}   (CRISPRme's report; excludes the on-target)")
+        else:
+            print(f"Total off-target sites: {total}")
         if variant_aware:
-            print(f"  found only because of a population variant (absent from the reference genome): {variant_only}")
+            if report_variant is not None and report_total:
+                pct = 100.0 * report_variant / report_total
+                print(f"  created by a population variant, absent from the reference genome: "
+                      f"{report_variant} ({pct:.0f}% of off-targets)")
+            else:
+                print(f"  found only because of a population variant (absent from the reference genome): {variant_only}")
             print(f"  where a variant creates a brand-new PAM site: {pam_created}")
-        print("Breakdown by mismatch/bulge count:")
+        print("Breakdown by mismatch/bulge count (from the per-guide summary table, which counts"
+              " variant targets by a slightly different rule):")
         for r in sorted(guide_rows, key=lambda r: (int(r["Mismatches"]), int(r["Bulge Size"]))):
             btype = "no bulge" if r["Bulge Type"] == "X" else f"{r['Bulge Type']} bulge"
             variant_note = f" ({r['Variant']} variant-only)" if variant_aware else ""

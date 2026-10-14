@@ -1,21 +1,21 @@
 {
   "counts": {
-    "off_targets": 148566,
+    "off_targets": 205415,
     "on_target_perfect_matches": 1,
     "recommended_panel_size": 101,
-    "total_sites": 148567,
-    "variant_created_off_targets": 41030
+    "total_sites": 205416,
+    "variant_created_off_targets": 97879
   },
   "crispritz_note": "search-engine (CRISPRitz v2.8.3) version is recorded in the build. See Params.txt for the exact run parameters.",
   "crisprme_version": "2.7.9",
   "database": {
     "databases": {
-      "1000G2021": 3202
+      "HGDP1kGP": 4091
     },
-    "n_indels": 9501510,
-    "n_records": 63425800
+    "n_indels": 17192381,
+    "n_records": 125180264
   },
-  "generated_date": "2026-10-13",
+  "generated_date": "2026-10-14",
   "genome": "hg38",
   "guides": [
     "CTAACAGTTGCTTTTATCACNNN"
@@ -30,6 +30,6 @@
     "mismatches": "4",
     "observed_max_mismatches_plus_bulges": 6
   },
-  "source_integrated_results": "CTAACAGTTGCTTTTATCACNNN+NRG_hg38+hg38_1000G2021_4+2_integrated_results.tsv",
-  "variant_datasets": "1000G2021"
+  "source_integrated_results": "CTAACAGTTGCTTTTATCACNNN+NRG_hg38+hg38_HGDP1kGP_4+2_integrated_results.tsv",
+  "variant_datasets": "HGDP1kGP"
 }

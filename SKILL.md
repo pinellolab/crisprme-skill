@@ -156,8 +156,9 @@ resumes where it stopped.
   files. Report the job name back and tell the user they can **just ask you** to check on it at any
   time — that is the point of the skill, so don't hand them a script to run as the primary way to
   follow their own job. (Mention `scripts/check_run_status.sh <job>` only as a self-service extra,
-  for when no session is open.) Don't sit in a polling loop yourself. (Quick, read-only calls like `--version`, `<subcommand> --help`,
-  `scorer-env check` or `cosmic-license status` can go through `scripts/crisprme_cmd.sh` directly.)
+  for when no session is open.) Don't sit in a polling loop yourself.
+- Quick, read-only calls like `--version`, `<subcommand> --help`, `scorer-env check` or
+  `cosmic-license status` can go through `scripts/crisprme_cmd.sh` directly.
 - **Memory:** a genome-wide *variant-aware* search needs **at least 64 GB of RAM** (peaks ~68–75 GB
   on the default index); 16–32 GB will be killed by the OOM killer (exit code 137). Reference-only
   or single-chromosome searches fit in ~16 GB. With Docker Desktop the limit is set under

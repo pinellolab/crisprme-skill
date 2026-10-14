@@ -163,9 +163,15 @@ documentation and its code disagree, and are candidates for upstream issues.
 ## Example
 
 [`examples/flagship-search/`](examples/flagship-search/) holds real, unedited output from a
-genome-wide variant-aware search: CRISPRme's own run manifest and parameters, the recommended
-validation panel, the per-guide summary table, and the skill's plain-language summary of the run.
-See that directory's README for what the numbers mean.
+genome-wide variant-aware search — produced by a fresh Claude Code session given a single
+one-line request, not by a hand-assembled command. Searching 4,091 people's genomes at the
+version's recommended depth, it found 205,415 off-target sites, of which **97,879 (48%) do not
+exist in the reference genome** and are only visible because the search covers population
+variation, plus one unambiguous on-target and a 101-site recommended validation panel.
+
+The directory ships CRISPRme's own run manifest and parameters, that validation panel, the
+per-guide summary table, and the skill's plain-language summary. Its README has the full
+provenance, the exact command, and what each number means.
 
 ## Documentation
 
