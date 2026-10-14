@@ -153,8 +153,10 @@ resumes where it stopped.
 - **These subcommands can be long-running (minutes to many hours) and memory-heavy.** Never run
   them in the foreground / never block waiting on them. Always launch through
   `scripts/run_crisprme_job.sh`, which backgrounds the process and tracks status through marker
-  files. Report the job name back to the user and tell them how to check on it later — do not sit
-  in a polling loop yourself. (Quick, read-only calls like `--version`, `<subcommand> --help`,
+  files. Report the job name back and tell the user they can **just ask you** to check on it at any
+  time — that is the point of the skill, so don't hand them a script to run as the primary way to
+  follow their own job. (Mention `scripts/check_run_status.sh <job>` only as a self-service extra,
+  for when no session is open.) Don't sit in a polling loop yourself. (Quick, read-only calls like `--version`, `<subcommand> --help`,
   `scorer-env check` or `cosmic-license status` can go through `scripts/crisprme_cmd.sh` directly.)
 - **Memory:** a genome-wide *variant-aware* search needs **at least 64 GB of RAM** (peaks ~68–75 GB
   on the default index); 16–32 GB will be killed by the OOM killer (exit code 137). Reference-only
@@ -587,8 +589,9 @@ scripts/crisprme_cmd.sh generate-personal-card --result_dir Results/<output> \
 
 ## Checking on a job
 
-Use `scripts/check_run_status.sh <job_name>` (the name you gave as the second argument to
-`run_crisprme_job.sh`). Reports current status (`RUNNING`/`DONE`/`FAILED`), whether the process is
+When the user asks how a job is going — in any wording — run this yourself and answer in plain
+language; don't redirect them to the command. Use `scripts/check_run_status.sh <job_name>` (the
+name you gave as the second argument to `run_crisprme_job.sh`). Reports current status (`RUNNING`/`DONE`/`FAILED`), whether the process is
 still alive, and the last 15 lines of the log. Re-run this on request rather than assuming a job
 has finished — do not guess completion from elapsed time. CRISPRme buffers much of its output, so
 an empty or quiet log early on is normal; the stage log `Results/<output>/log.txt` (tab-separated

@@ -255,9 +255,7 @@ def print_panel(report, top_n):
         if r.get("Perfect_match") == "Yes":
             flags.append("PERFECT MATCH")
         if r.get("REF/ALT_origin") == "ALT":
-            variants = r.get("Variant", "?").split(",")
-            more = f" (+{len(variants) - 2} more)" if len(variants) > 2 else ""
-            flags.append(f"variant {','.join(variants[:2])}{more}")
+            flags.append(f"variant {format_variants(r.get('Variant', '?'))}")
         if r.get("IntOGen_cancer_driver", "-") not in ("-", ""):
             flags.append("cancer-driver gene")
         flag_text = f"  [{'; '.join(flags)}]" if flags else ""
@@ -273,6 +271,25 @@ def print_panel(report, top_n):
     if any(k not in ("-", "") for k in regions):
         print("  Panel sites by gene region: " + ", ".join(f"{k} {v}" for k, v in sorted(regions.items(), key=lambda kv: -kv[1])))
     print()
+
+
+def format_variants(value, max_shown=2):
+    """Shorten the panel's Variant field for one-line display.
+
+    The field is `chrom;pos;ref;alt[,chrom;pos;ref;alt...][ (rsID[,rsID...])]` -- the trailing
+    rsID group carries its own commas, so it has to be split off before the variants are counted,
+    or a multi-rsID site gets miscounted and its parentheses left unbalanced.
+    """
+    text = (value or "").strip()
+    rsids = ""
+    if text.endswith(")") and " (" in text:
+        text, _, rsids = text.rpartition(" (")
+        rsids = rsids.rstrip(")")
+    variants = [v for v in text.split(",") if v]
+    shown = ",".join(variants[:max_shown])
+    if len(variants) > max_shown:
+        return f"{shown} (+{len(variants) - max_shown} more)"
+    return f"{shown} ({rsids})" if rsids else shown
 
 
 ASSEMBLY_SEARCH_HAPLOTYPES = ("paternal", "maternal")
