@@ -265,7 +265,7 @@ $ scripts/run_crisprme_job.sh download dl-index-HGDP1kGP --what index \
     --index-name NRG_3_hg38+hg38_HGDP1kGP --path .</span>
 Launched 'download' in the background as job 'dl-index-HGDP1kGP'.
 
-<span class="in"># about 15 minutes later, from the job log:</span>
+<span class="in"># about 18 minutes later, from the index download job's log:</span>
 Installed Tier-1 genotype store genotypes_hg38_HGDP1kGP/ into /DATA/Dictionaries
 Downloaded index -&gt; /DATA/genome_library/NRG_3_hg38+hg38_HGDP1kGP</pre></div>
       </details>
@@ -305,7 +305,7 @@ Downloaded index -&gt; /DATA/genome_library/NRG_3_hg38+hg38_HGDP1kGP</pre></div>
         <div class="tool-body"><pre><span class="in">$ scripts/run_crisprme_job.sh complete-test smoke-1013 --thread 16</span>
 Launched 'complete-test' in the background as job 'smoke-1013'.
 
-<span class="in">$ scripts/check_run_status.sh smoke-1013      # about 15 minutes later</span>
+<span class="in">$ scripts/check_run_status.sh smoke-1013      # about 14 minutes later</span>
 status: <span class="good">DONE</span>
 process: not running
 --- last 15 lines of log ---
@@ -321,7 +321,7 @@ produced CTAACAGTTGCTTTTATCACNNN+NRG_hg38+hg38_HGDP1kGP_2+2_integrated_results.t
       <div class="who assistant sans">Claude</div>
       <div class="bubble">
         <p>The built-in test passed <span class="pill done">done</span>. It ran CRISPRme's example
-        guide genome-wide against the variant index you downloaded and took about 15 minutes. You
+        guide genome-wide against the variant index you downloaded and took about 14 minutes. You
         are ready for real searches.</p>
       </div>
     </div>

@@ -99,21 +99,31 @@ the published `pinellolab/crisprme:v2.7.9` image under Apptainer, on 2026-10-13.
 
 | Route | Result | Wall time |
 |---|---|---|
-| Container install + runtime registration | pass | ~15 min (4.9 GB pull) |
-| `download --what all` (hg38 + annotations + PAMs + reference index) | pass | a few min, ~26 GB |
-| `download --what index` (`NRG_3_hg38+hg38_HGDP1kGP`, the new default) | pass | ~15 min, ~87 GB |
+| Container pull + runtime registration (Apptainer) | pass | 5 min, 4.9 GB → 4.5 GB `.sif` |
+| `download --what index` (`NRG_3_hg38+hg38_HGDP1kGP`, the new default) | pass | 18 min, ~87 GB |
+| `download --what genome --source ucsc` (pig, `susScr11`) | pass | 9 min, 3.0 GB |
+| `download --what pams` | pass | seconds |
 | `scorer-env check` (CRISPR-Bulge ML scorer) | pass, compute self-test OK | seconds |
-| `complete-test` smoke test, genome-wide, variant index | pass | ~15 min |
-| `complete-search`, genome-wide variant-aware, population-level | pass | ~55 min |
-| `complete-search`, same guide with `--per-sample` | pass | ~60 min |
-| `generate-personal-card` for one individual | pass | ~18 s |
-| `complete-test` (benchmark mode) + `validate-test` | 2 benchmarks passed, 0 failed | ~20 min + <1 min |
-| Non-human genome: pig (`susScr11`) download, index, search | pass | ~35 min total |
-| Other nuclease: SaCas9 index from the published kit, then search | pass | ~10 min + ~35 min |
-| `analyze_results.py` on all of the above | pass | ~3 s, 16 MB RAM on genome-wide output |
+| `complete-test` smoke test, genome-wide, variant index | pass | 14 min |
+| `complete-search`, genome-wide variant-aware, population-level | pass | 59 min |
+| `complete-search`, same guide with `--per-sample` | pass | 61 min |
+| `generate-personal-card` for one individual | pass | 18 s |
+| `complete-test` (benchmark mode) + `validate-test` | 2 benchmarks passed, 0 failed | 21 min + 6 s |
+| `build-index-only` on a non-human genome (pig), then search | pass | 12 min + 21 min |
+| SaCas9 index from the published kit, then variant-aware search | pass | 8 min + 33 min |
+| `analyze_results.py` on every run above | pass | 3 s, 16 MB RAM on genome-wide output |
 
-`assembly-search` is documented from v2.7.9's source and verified against the output of an
-earlier real run (v2.6.2, HPRC HG01255), but has not been re-executed end-to-end on v2.7.9.
+Not exercised, and so not claimed:
+
+- **`download --what all`** — the test directory's hg38 reference data, reference index and
+  annotations were hardlinked from an existing local CRISPRme checkout to save the download. The
+  `--what index`, `--what genome` and `--what pams` modes were exercised; `--what all` and
+  `--what assembly` were not.
+- **`assembly-search`** — documented from v2.7.9's source and verified against the output of an
+  earlier real run (v2.6.2, HPRC HG01255), but not re-executed on v2.7.9. It needs two
+  genome-scale index builds and searches.
+- **GPU scoring** (`--compute-backend cuda`) — the skill's wrapper does not pass a GPU into the
+  container, so this path is CPU-only here.
 
 ### Behaviour worth knowing about
 
