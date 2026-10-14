@@ -164,7 +164,6 @@
       <li><a href="#nuclease">A different nuclease</a></li>
       <li><a href="#species">A non-human genome</a></li>
       <li><a href="#assembly">A personal genome assembly</a></li>
-      <li><a href="#validate">Cross-checking against brute force</a></li>
       <li><a href="#ranking">Comparing candidate guides</a></li>
     </ol>
   </nav>
@@ -323,6 +322,26 @@ produced CTAACAGTTGCTTTTATCACNNN+NRG_hg38+hg38_HGDP1kGP_2+2_integrated_results.t
         <p>The built-in test passed <span class="pill done">done</span>. It ran CRISPRme's example
         guide genome-wide against the variant index you downloaded and took about 14 minutes. You
         are ready for real searches.</p>
+      </div>
+    </div>
+
+    <div class="turn">
+      <div class="who user sans">You</div>
+      <div class="bubble"><blockquote>Can you check it isn't missing sites, not just that it ran?</blockquote></div>
+    </div>
+
+    <div class="turn">
+      <div class="who assistant sans">Claude</div>
+      <div class="bubble">
+        <p>There's a stronger check for that. <span class="mono">validate-test</span> compares
+        CRISPRme's off-targets against an exhaustive brute-force search of the same test region —
+        it is upstream's own continuous-integration gate. I ran it: <strong>2 benchmarks passed,
+        0 failed</strong>, one SpCas9 and one Cas12a, matching the brute-force set exactly. About
+        20 minutes.</p>
+        <p>What it establishes is worth being precise about: it validates the <em>search engine</em>
+        against ground truth on a chromosome-22 test panel, using CRISPRme's older
+        build-from-scratch path. It does not re-check your own search or the downloaded
+        indexes.</p>
       </div>
     </div>
 
@@ -886,54 +905,9 @@ Full combined report (both copies' reports inside): hg01255-sg1617_combined_repo
     </div>
 
     <div class="callout sans">
-      Checked against CRISPRme+ v2.7.9's code and against this earlier run's output, but not yet
-      re-run end to end on v2.7.9 on this server.
-    </div>
-  </section>
-
-  <section class="scenario" id="validate">
-    <div class="scenario-head"><span class="eyebrow">Cross-checking</span><span class="rule"></span></div>
-    <h2>Is CRISPRme itself finding everything?</h2>
-    <p class="lede">A separate check compares CRISPRme's results against an exhaustive search of
-    the same region, so it tests correctness rather than just whether the run completed.</p>
-
-    <div class="turn">
-      <div class="who user sans">You</div>
-      <div class="bubble"><blockquote>Before we rely on this for the grant, can you verify CRISPRme isn't missing sites?</blockquote></div>
-    </div>
-
-    <div class="tool">
-      <details class="tool-card" open>
-        <summary><span class="label sans">background &middot; two jobs &middot; real captured output</span>
-          <span class="cmd">complete-test (benchmark mode) &rarr; validate-test</span></summary>
-        <div class="tool-body"><pre><span class="in"># about 20 minutes: builds small chr22 test indexes and runs each benchmark</span>
-$ CRISPRME_ALLOW_ONDEMAND_BUILD=1 CRISPRME_SKIP_HEAVY=1 \
-    scripts/run_crisprme_job.sh complete-test bench-chr22-1013 \
-    --chrom chr22 --vcf_dataset 1000G --thread 16
-status: <span class="good">DONE</span>
-
-<span class="in"># then the comparison itself, under a minute</span>
-$ scripts/run_crisprme_job.sh validate-test validate-chr22-1013 --chrom chr22
-[cas9_sg1617] <span class="good">PASSED</span>: CRISPRme and brute-force off-target sets match.
-[cas12a_hbg] <span class="good">PASSED</span>: CRISPRme and brute-force off-target sets match.
-[cas9_sg1617_simple] SKIPPED: complete-test targets not found (this benchmark was not run).
-[cas12a_hbg_simple] SKIPPED: complete-test targets not found (this benchmark was not run).
-
-Validation summary: <span class="good">2 passed, 0 failed</span>, 2 skipped.</pre></div>
-      </details>
-    </div>
-
-    <div class="turn">
-      <div class="who assistant sans">Claude</div>
-      <div class="bubble">
-        <p>Both benchmarks match exactly, one SpCas9 and one Cas12a: on chromosome 22 with the
-        1000 Genomes data, CRISPRme found precisely the set of sites an exhaustive search finds,
-        with nothing missing and nothing extra.</p>
-        <p>The two skipped entries are the deeper benchmarks, which I left out because they need
-        a lot of memory. I can run those too if you want the complete set. Note this check uses
-        CRISPRme's older build-from-scratch path rather than the downloaded indexes, so it
-        validates the search engine rather than the index files.</p>
-      </div>
+      These counts come from a <strong>v2.6.2</strong> run, and reconciliation has kept improving
+      since — so both the origin counts and the exact coordinates would differ on a current run.
+      Shown for the shape of the output rather than as current figures.
     </div>
   </section>
 
