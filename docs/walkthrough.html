@@ -397,16 +397,16 @@ produced CTAACAGTTGCTTTTATCACNNN+NRG_hg38+hg38_HGDP1kGP_2+2_integrated_results.t
     <div class="tool">
       <details class="tool-card">
         <summary><span class="label sans">background &middot; runs script</span>
-          <span class="cmd">scripts/run_crisprme_job.sh complete-search sg1617-pop-1013 &hellip;</span></summary>
-        <div class="tool-body"><pre><span class="in">$ scripts/run_crisprme_job.sh complete-search sg1617-pop-1013 \
+          <span class="cmd">scripts/run_crisprme_job.sh complete-search sg1617-HGDP1kGP &hellip;</span></summary>
+        <div class="tool-body"><pre><span class="in">$ scripts/run_crisprme_job.sh complete-search sg1617-HGDP1kGP \
     --genome Genomes/hg38 --pam PAMs/20bp-NRG-SpCas9.txt --guide guide_sg1617.txt \
-    --vcf vcf_1000G2021.txt --samplesID samplesID_1000G2021.txt \
+    --vcf list_vcf.txt --samplesID list_samplesID.txt \
     --annotation Annotations/dhs+encode_screenv4+gencode+cosmic.hg38.bed.gz \
     --gene_annotation Annotations/gencode.protein_coding.bed.gz \
-    --mm 4 --bDNA 1 --bRNA 1 --output sg1617-pop-1013 --thread 16</span>
+    --mm 4 --bDNA 1 --bRNA 1 --output sg1617-HGDP1kGP --thread 16</span>
 
 CRISPRme input validator (lightweight)
-  [OK] hg38_1000G2021: precomputed variant index + dictless registry present
+  [OK] hg38_HGDP1kGP: precomputed variant index + dictless registry present
   [OK] Guide file: guides padded to match PAM 20bp-NRG-SpCas9.txt
   ...
 Result: <span class="good">PASSED</span>
@@ -417,7 +417,7 @@ Result: <span class="good">PASSED</span>
 
     <div class="turn">
       <div class="who assistant sans">Claude</div>
-      <div class="bubble"><p>Started as job <span class="mono">sg1617-pop-1013</span>. A
+      <div class="bubble"><p>Started as job <span class="mono">sg1617-HGDP1kGP</span>. A
       genome-wide variant-aware search takes about an hour here and needs at least 64 GB of
       memory. I will check whenever you ask.</p></div>
     </div>
@@ -430,40 +430,42 @@ Result: <span class="good">PASSED</span>
     <div class="tool">
       <details class="tool-card" open>
         <summary><span class="label sans">background &middot; runs script &middot; real captured output</span>
-          <span class="cmd">scripts/analyze_results.py Results/sg1617-pop-1013 --top 6</span></summary>
-        <div class="tool-body"><pre><span class="in">$ scripts/analyze_results.py Results/sg1617-pop-1013 --top 6</span>
-=== CRISPRme results summary: sg1617-pop-1013 ===
+          <span class="cmd">scripts/analyze_results.py Results/sg1617-HGDP1kGP --top 6</span></summary>
+        <div class="tool-body"><pre><span class="in">$ scripts/analyze_results.py Results/sg1617-HGDP1kGP --top 6</span>
+=== CRISPRme results summary: sg1617-HGDP1kGP ===
 Guide: CTAACAGTTGCTTTTATCACNNN   Counts ranked by: CFD
 CRISPRme version: 2.7.9
 Analysis: variant-aware, population-level default (worst-case representative per site;
           per-person haplotypes not resolved)
-Variant panel: 1000G2021 (3202 people)
+Variant panel: HGDP1kGP (4091 people)
 Search depth: 4 mismatches, 1 DNA / 1 RNA bulges, max 6 total edits
 Nuclease/PAM: SpCas9 / NRG
 
-Total off-target sites: 148567
-  found only because of a population variant (absent from the reference genome): 46502
-  where a variant creates a brand-new PAM site: 4843
+Total off-target sites: 205415   (CRISPRme's report; excludes the on-target)
+  created by a population variant, absent from the reference genome: 97879 (48% of off-targets)
+  where a variant creates a brand-new PAM site: 10837
 
 <span class="good">On-target: exactly one perfect match (the presumed on-target site).</span>
 
 Off-target site totals by population (REF = reference genome, no variant needed):
-  (population-level run: these are worst-case upper bounds -- typically ~1.5x the --per-sample counts)
-  REF: 102065   AFR: 30270   AMR: 23225   SAS: 20019   EUR: 18759   EAS: 16815
+  (population-level run: these per-population SITE TOTALS are worst-case upper bounds -- measured
+   ~1.5x the --per-sample totals. Per-site 'Observed' carrier counts are NOT inflated: they are
+   identical in both modes.)
+  REF: 96477   AFR: 56733   CSA: 41537   EAS: 38868   AMR: 35288   EUR: 34718   MID: 23696   OCE: 9977
 
-SNP+indel co-occurrence off-targets (need two variants together): 326 (CONFIRMED 312, PUTATIVE 14)
-SNP+SNP co-occurrence off-targets (need two variants together): 102749 (PUTATIVE 102749)
+SNP+indel co-occurrence off-targets (need two variants together): 642 (CONFIRMED 632, PUTATIVE 10)
+SNP+SNP co-occurrence off-targets (need two variants together): 342396 (PUTATIVE 342396)
 
 Recommended validation panel: 101 sites (data/panel_top100.tsv in the report zip). Top 6:
-  1. chr2:60495260(-)   0mm+0b  CFD=1.0000  Observed=reference    BCL11A/intron    [PERFECT MATCH; cancer-driver gene]
-  2. chr2:210530658(-)  2mm+1b  CFD=0.9470  Observed=96 carriers  CPS1/intron      [variant chr2;210530659;G;C]
-  3. chr2:161236052(-)  1mm+1b  CFD=0.0600  Observed=reference    TANK/exon
-  4. chr12:104862518(-) 2mm+1b  CFD=0.7700  Observed=87 carriers  SLC41A2/intron   [variant chr12;104862537;A;G]
-  5. chr6:29968284(-)   1mm+2b  CFD=0.7270  Observed=484 carriers HLA-A/intergenic [variant chr6;29968288;C;T]
-  6. chr10:33753323(-)  3mm+1b  CFD=0.7110  Observed=reference    PARD3/intergenic
-  Panel sites by gene region: intergenic 57, intron 33, - 7, exon 3, CDS 1
+  1. chr2:60495260(-)   0mm+0b  CFD=1.0000  Observed=reference     BCL11A/intron      [PERFECT MATCH; cancer-driver gene]
+  2. chr2:210530658(-)  2mm+1b  CFD=0.9470  Observed=111 carriers  CPS1/intron        [variant chr2;210530659;G;C (rs114518452)]
+  3. chr22:22720942(+)  0mm+2b  CFD=0.3890  Observed=1 carrier     GGTLC2/intergenic  [variant chr22;22720961;AAG;A]
+  4. chr4:177401725(+)  2mm+0b  CFD=0.2610  Observed=5 carriers    AGA/intergenic     [variant chr4;177401733;C;T,chr4;177401742;G;T (rs189308020,rs556244870)]
+  5. chr13:30199212(-)  2mm+0b  CFD=0.1330  Observed=1 carrier     KATNAL1/intergenic [variant chr13;30199226;T;C (rs1455874593)]
+  6. chr2:161236052(-)  1mm+1b  CFD=0.0600  Observed=reference     TANK/exon
+  Panel sites by gene region: intergenic 52, intron 37, exon 6, - 5, CDS 1
 
-Full report: Results/sg1617-pop-1013/sg1617-pop-1013_report.zip -&gt; unzip, open report.html</pre></div>
+Full report: Results/sg1617-HGDP1kGP/sg1617-HGDP1kGP_report.zip -&gt; unzip, open report.html</pre></div>
       </details>
     </div>
 
@@ -471,13 +473,13 @@ Full report: Results/sg1617-pop-1013/sg1617-pop-1013_report.zip -&gt; unzip, ope
       <div class="who assistant sans">Claude</div>
       <div class="bubble">
         <p>The guide has exactly one perfect match, in BCL11A, which is the intended target for
-        this well-known guide. At this depth CRISPRme predicts about 149,000 candidate
-        off-target sites. Just under a third of them, 46,502, exist only because of a variant
-        that some people carry, so a reference-only search would not list them at all.</p>
+        this well-known guide. At this depth CRISPRme predicts 205,415 candidate off-target
+        sites — and <strong>97,879 of them, 48%, do not exist in the reference genome at all</strong>.
+        They are only visible because the search covers the variation carried by 4,091 people.</p>
         <p>The strongest candidate off-target is a variant-created site in CPS1 carried by 96
         people in the panel, scored 0.95 by CFD. It sits at the top of the recommended validation
         panel, which is a ready-made list of about 100 sites to confirm experimentally.</p>
-        <p>The full report is in <span class="mono">sg1617-pop-1013_report.zip</span>. Open
+        <p>The full report is in <span class="mono">sg1617-HGDP1kGP_report.zip</span>. Open
         <span class="mono">report.html</span> inside it: that is the version to share.</p>
       </div>
     </div>
@@ -584,9 +586,15 @@ Samples with the most individual off-target sites (of 3202 samples in this run):
     <div class="turn">
       <div class="who assistant sans">Claude</div>
       <div class="bubble">
-        <p>Now the per-person numbers are real rather than upper bounds. Each person carries
-        around 2,600 of these sites at most, and the previous population-level per-person counts
-        were roughly 1.5 times higher because they assumed the worst case everywhere.</p>
+        <p>Now the per-person totals are real rather than upper bounds. Each person carries
+        around 2,600 of these sites at most, where the population-level per-person totals were
+        roughly 1.5 times higher because they assumed the worst case everywhere. (This pair of
+        runs used the smaller 1000G2021 panel, which is why the totals are below the
+        4,091-person figures above.)</p>
+        <p>What did <em>not</em> change: the per-site carrier counts. "111 people carry this
+        variant" is the same number in both modes — it comes from the genotype data that ships
+        with the index, so it needs no re-run. What <code class="mono">--per-sample</code> buys is
+        below.</p>
         <p>The pairs of variants are also resolved: of the 16,943 off-targets that need two
         variants together, 7,596 are confirmed to sit on the same chromosome copy in a real
         person. The population-level run could only call all of those possible.</p>
@@ -627,6 +635,15 @@ chr14  105860658  4   1   0.0     NA20355   TMEM121</pre></div>
         four sit in the same gene, RPIA. The card also includes plots of every variant
         off-target this person carries, not just the private ones.</p>
       </div>
+    </div>
+
+    <div class="callout sans">
+      <strong>Carrier counts need care, in both directions.</strong> A count against a
+      <em>single</em> variant means exactly what it says. Against a site needing two or more
+      variants it means "these people carry those variants", not "these people have this
+      off-target" — proving the variants sit on one chromosome copy is what per-person mode adds.
+      In one real panel, 30 of 101 sites were multi-variant, one reading 4,021 carriers of 4,091
+      people.
     </div>
 
     <div class="callout sans">
