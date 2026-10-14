@@ -39,7 +39,7 @@ A worked walkthrough of these paths, with real command output, is in
 - **A container runtime**: Docker on a laptop or workstation, or **Apptainer/Singularity** on an
   HPC or shared server (no root needed). A conda environment with CRISPRme+ installed from source
   also works.
-- **Disk**: ~4.5 GB for the container image, ~26 GB for the hg38 reference data, and ~70–90 GB
+- **Disk**: ~4.2 GB for the container image, ~26 GB for the hg38 reference data, and ~70–90 GB
   per variant index. Budget **~130 GB** for a standard variant-aware setup.
 - **Memory**: a genome-wide variant-aware search needs **at least 64 GB of RAM** (it peaks around
   68–75 GB). Reference-only or single-chromosome searches fit in ~16 GB.
@@ -126,9 +126,6 @@ request.
   and `--what pams` modes were exercised.
 - **GPU scoring is unavailable through the wrapper**, which does not pass a GPU into the
   container, so scoring runs on CPU.
-- **Disk is the binding constraint**, and upstream's figures understate it: the default variant
-  index is ~87 GB on disk and a standard variant-aware setup wants ~130 GB free, not the ~100 GB
-  documented.
 - **Non-SpCas9 nucleases get no CFD or CRISPR-Bulge score** — both models are SpCas9-trained — so
   those runs are ranked by edit distance alone. A missing score is not a low score.
 

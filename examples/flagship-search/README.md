@@ -69,15 +69,10 @@ invisible to a reference-only search.
 | `run_manifest.json` | CRISPRme's own machine-readable run record: counts, panel composition, versions |
 | `Params.txt` | the exact search parameters CRISPRme recorded |
 | `panel_top100.tsv` | the recommended validation panel — the table you would use to design a confirmation assay |
-| `summary_by_guide.CFD.txt` | off-target counts per mismatch/bulge class |
+| `summary_by_guide.CFD.txt` | off-target counts per mismatch/bulge class — its `Variant` column counts sites whose best alignment came from the variant genome, so it is larger than the headline count of sites absent from the reference |
 
 Everything else a run produces — `report.html` with embedded plots, the full annotated results
 table, the per-tier TSVs — is too large to ship here. Those live in the run's `report.zip`.
-
-**On two different "variant" counts:** `run_manifest.json` reports 97,879 variant-created
-off-targets, while the `Variant` column of `summary_by_guide.CFD.txt` sums to 108,939. They come
-from different tables and classify variant targets by different rules. The manifest figure is the
-one `report.html` shows, so it is the one to quote.
 
 ## Reproducing it
 
