@@ -50,7 +50,7 @@ expects CRISPRme+ 2.6 or later.
 ## Install
 
 ```bash
-git clone <this repo> crisprme-skill
+git clone https://github.com/pinellolab/crisprme-skill.git
 
 # make it available to Claude Code, either for one project...
 mkdir -p <your-project>/.claude/skills
