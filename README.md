@@ -94,12 +94,17 @@ blocking the conversation.
 
 ## Tested against v2.7.9
 
-Every route below was executed end-to-end on a shared Linux server (88 cores, 1 TB RAM) using
-the published `pinellolab/crisprme:v2.7.9` image under Apptainer, on 2026-10-13.
+Every route below was executed end-to-end through this skill's own scripts on a shared Linux
+server (88 cores, 1 TB RAM), using the published `pinellolab/crisprme:v2.7.9` image under
+Apptainer, on 2026-10-13. "Executed" means the commands and scripts were run and checked; the
+parameters were chosen by hand rather than by a Claude session, except for the search in
+[`examples/flagship-search/`](examples/flagship-search/), which a session drove from a one-line
+request.
 
 | Route | Result | Wall time |
 |---|---|---|
-| Container pull + runtime registration (Apptainer) | pass | 5 min, 4.9 GB → 4.5 GB `.sif` |
+| Runtime registration from an existing image (`install_crisprme.sh --sif`) | pass | seconds |
+| Container image pull (`apptainer pull`, run directly — not via the installer) | pass | 5 min, 4.9 GB → 4.2 GB `.sif` |
 | `download --what index` (`NRG_3_hg38+hg38_HGDP1kGP`, the new default) | pass | 18 min, ~87 GB |
 | `download --what genome --source ucsc` (pig, `susScr11`) | pass | 9 min, 3.0 GB |
 | `download --what pams` | pass | seconds |
@@ -113,50 +118,19 @@ the published `pinellolab/crisprme:v2.7.9` image under Apptainer, on 2026-10-13.
 | SaCas9 index from the published kit, then variant-aware search | pass | 8 min + 33 min |
 | `analyze_results.py` on every run above | pass | 3 s, 16 MB RAM on genome-wide output |
 
-Not exercised, and so not claimed:
+### Known limits
 
-- **`download --what all`** — the test directory's hg38 reference data, reference index and
-  annotations were hardlinked from an existing local CRISPRme checkout to save the download. The
-  `--what index`, `--what genome` and `--what pams` modes were exercised; `--what all` and
-  `--what assembly` were not.
-- **`assembly-search`** — documented from v2.7.9's source and verified against the output of an
-  earlier real run (v2.6.2, HPRC HG01255), but not re-executed on v2.7.9. It needs two
-  genome-scale index builds and searches.
-- **GPU scoring** (`--compute-backend cuda`) — the skill's wrapper does not pass a GPU into the
-  container, so this path is CPU-only here.
-
-### Behaviour worth knowing about
-
-Found while testing v2.7.9. Each is handled in `SKILL.md`; several are places where upstream's
-documentation and its code disagree, and are candidates for upstream issues.
-
-- **`complete-test` can report success without testing anything.** With no index downloaded it
-  prints download instructions and exits 0. With an index present it tests whichever index sorts
-  first alphabetically, so a custom-PAM index (`NGG_…`, `NNGRRT_…`) is picked over the default
-  `NRG_…` one and the run then fails pre-flight on guide length.
-- **`complete-test` ignores `--chrom`** in its default smoke mode, despite the README, so it is
-  always genome-wide and needs the full ~64 GB on a variant index.
-- **`validate-test` only works on output from the legacy on-demand-build test mode**
-  (`CRISPRME_ALLOW_ONDEMAND_BUILD=1`), not from the default smoke test. The `--vcf_dataset` flag
-  the docs point at does not switch modes.
-- **`generate-personal-card` accepts an unknown sample ID silently** — it writes an empty table
-  and exits 0, which is indistinguishable from "this person has no private off-targets". It also
-  matches sample IDs by substring.
-- **`download --what index` appends to a shared `list_vcf.txt`.** With two variant indexes
-  installed, a search given `--vcf list_vcf.txt` silently searches both panels.
-- **`NRG_3_hg38+hg38_1000G2021_HGDP`**, the default index before 2.7, was deleted from
-  HuggingFace in 2.7.8. Older notes and scripts pointing at it now fail.
-- **Population-level per-person counts are worst-case upper bounds**, measured at roughly 1.5×
-  the `--per-sample` numbers for the same guide. Only `--per-sample` resolves which individuals
-  actually carry a site.
+- **`assembly-search` has not been run on v2.7.9.** It is documented from the source and checked
+  against the output of an earlier real run (v2.6.2, HPRC HG01255), so expect rough edges.
+- **`download --what all` and `--what assembly` are untested.** The `--what index`, `--what genome`
+  and `--what pams` modes were exercised.
+- **GPU scoring is unavailable through the wrapper**, which does not pass a GPU into the
+  container, so scoring runs on CPU.
+- **Disk is the binding constraint**, and upstream's figures understate it: the default variant
+  index is ~87 GB on disk and a standard variant-aware setup wants ~130 GB free, not the ~100 GB
+  documented.
 - **Non-SpCas9 nucleases get no CFD or CRISPR-Bulge score** — both models are SpCas9-trained — so
   those runs are ranked by edit distance alone. A missing score is not a low score.
-- **The guide-length pre-flight error suggests the wrong fix.** It advises appending `N`s when the
-  spacer itself is the wrong length for the PAM file.
-- **`download --what pams` ships only three PAM files** (NGG, NRG, NNN); any other nuclease needs
-  a hand-written PAM file.
-- Deep searches are genuinely dangerous to launch blind: upstream's own estimator rates
-  6 mismatches + 2 + 2 bulges as `EXTREME` (~200 GB of intermediates, OOM risk).
 
 ---
 
@@ -178,17 +152,15 @@ provenance, the exact command, and what each number means.
 
 - **[`SKILL.md`](SKILL.md)** — the operational document Claude follows. It is also the most
   complete written account of how to run CRISPRme+ v2.7.9 on a shared server.
-- **Upstream**: [`pinellolab/crisprme-plus`](https://github.com/pinellolab/crisprme-plus) —
-  `README.md`, `METHODS.md`, `docs/PRECOMPUTED_INDEXES.md`, `docs/DATA_LAYOUT.md`,
-  `docs/INPUT_FORMATS.md`. The skill defers to these for the science and the file formats; it
-  does not duplicate them.
+- **Upstream**: [`pinellolab/crisprme-plus`](https://github.com/pinellolab/crisprme-plus). The
+  skill defers to CRISPRme's own documentation for the science and the file formats; it does not
+  duplicate them.
 
 ## Keeping up with upstream
 
-CRISPRme+ releases frequently — sometimes several times a week — and 2.7.x has already changed
-default search depth, the default variant panel, and the ML scorer. The skill pins a version and
-says so: if `scripts/crisprme_cmd.sh --version` reports anything other than v2.7.9, confirm flags
-with `<subcommand> --help` and check upstream's `CHANGELOG.md` before relying on this document.
+This skill targets **v2.7.9**. If `scripts/crisprme_cmd.sh --version` reports something else,
+flags and defaults may have moved — confirm with `<subcommand> --help` and upstream's
+`CHANGELOG.md` before relying on this document.
 
 ## Citing CRISPRme
 
