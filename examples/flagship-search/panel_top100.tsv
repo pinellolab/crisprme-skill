@@ -1,0 +1,102 @@
+rank	Chromosome	Position	Strand	Aligned_protospacer+PAM	Mismatches	Bulges	Mismatches+bulges	Perfect_match	CFD	CRISPR-Bulge	REF/ALT_origin	PAM_creation	Variant	Observed	MAF	Gene	Gene_distance_kb	Gene_region	GENCODE	ENCODE	DHS	COSMIC_cancer_gene	IntOGen_cancer_driver	High_complexity_region
+1	chr2	60495260	-	CTAACAGTTGCTTTTATCACAGG	0	0	0	Yes	1.0000	1.0000	REF	-	-	reference	-	BCL11A	0.0	intron	gene,transcript(-)	-	Myeloid_/_erythroid	-	BCL11A	-
+2	chr2	210530658	-	-TAACAGcTGCcTTTATCACTGG	2	1	3	-	0.9470	0.9870	ALT	TGG	chr2;210530659;G;C	96 carriers	1.51e-02	CPS1	0.0	intron	gene,transcript(+)	-	-	-	-	-
+3	chr2	161236052	-	CTAcCAGTTG-TTTTATCACTGG	1	1	2	-	0.0600	0.0000	REF	-	-	reference	-	TANK	0.0	exon	UTR,exon,gene,transcript(+),transcript(-)	-	-	-	-	-
+4	chr12	104862518	-	CT-ACAGTaaCTTTTATCACTGG	2	1	3	-	0.7700	0.0100	ALT	-	chr12;104862537;A;G	87 carriers	1.41e-02	SLC41A2	0.0	intron	gene,transcript(+),transcript(-)	-	-	-	-	-
+5	chr6	29968284	-	CATAACAGTTaCTTTTATCA-AGG	1	2	3	-	0.7270	0.0500	ALT	-	chr6;29968288;C;T	484 carriers	8.04e-02	HLA-A	-22.401	intergenic	gene,transcript(+),transcript(-)	dELS	Myeloid_/_erythroid,Renal_/_cancer	-	-	-
+6	chr10	33753323	-	tT-ACAGcTGCaTTTATCACAGG	3	1	4	-	0.7110	0.3200	REF	-	-	reference	-	PARD3	356.214	intergenic	intergenic	-	-	-	-	-
+7	chr2	88860629	-	-CTAAaAGTaaCTTTTATCAgAGG	4	2	6	-	0.7640	0.0000	ALT	-	chr2;88860632;C;T,chr2;88860633;T;C,chr2;88860635;A;G,chr2;88860637;C;T,chr2;88860642;A;G,chr2;88860644;C;T,chr2;88860645;T;A,chr2;88860651;C;A	105 carriers	3.12e-04	RPIA	-109.701	intergenic	gene,transcript(-)	PLS	Lymphoid	-	-	22 in window
+8	chr9	106422499	-	tC-AACAGTaaCTTTTATCAgGGG	4	2	6	-	0.7590	0.0010	ALT	-	chr9;106422519;A;T	3 carriers	4.68e-04	ZNF462	440.643	intergenic	gene,transcript(+)	dELS	-	-	-	-
+9	chr9	62569239	+	a-AACAGTcGaTTTTATCACTGG	3	1	4	-	0.6600	0.0050	ALT	-	chr9;62569257;G;A	8 carriers	1.25e-03	AL391987.2	-706.039	intergenic	gene,transcript(+)	-	-	-	-	-
+10	chr9	66603750	+	a-AACAGTcGaTTTTATCACTGG	3	1	4	-	0.6600	0.0050	ALT	-	chr9;66603768;G;A	2 carriers	3.12e-04	ZNF658	252.654	intergenic	gene,transcript(+)	-	-	-	-	-
+11	chr19	49070224	-	tT-tCAGcTaCTTTTATCACCGG	4	1	5	-	0.5280	0.0240	REF	-	-	reference	-	KCNA7	0.0	CDS	CDS,exon,gene,transcript(-)	dELS	-	-	-	-
+12	chr12	73773298	-	a-AACAagTaCTTTTATCACTGG	4	1	5	-	0.6520	0.0000	REF	-	-	reference	-	ATXN7L3B	764.514	intergenic	gene,transcript(+),transcript(-)	-	Stromal_B	-	-	-
+13	chr10	31627312	+	-TAAtAacTGCTTTTATCACCAGG	3	2	5	-	0.6360	0.0000	REF	-	-	reference	-	ZEB1	-97.499	intergenic	intergenic	-	-	-	-	-
+14	chr10	87050505	+	-TAAtAacTGCTTTTATCACCAGG	3	2	5	-	0.6360	0.0000	REF	-	-	reference	-	GLUD1	0.0	exon	UTR,exon,gene,transcript(-)	-	-	-	-	-
+15	chrX	121050568	-	-TAAtAacTGCTTTTATCACCAGG	3	2	5	-	0.6360	0.0000	REF	-	-	reference	-	GLUD2	-0.475	intergenic	gene,transcript(+)	-	-	-	-	-
+16	chr12	51783903	-	tA-AAaAGTTaCTTTTATCAaTGG	4	2	6	-	0.6230	0.0000	REF	-	-	reference	-	SCN8A	0.0	intron	gene,transcript(+)	-	-	-	-	-
+17	chr12	18653307	-	tG-AAaAaTTaCTTTTATCACTGG	4	2	6	-	0.6110	0.0000	REF	-	-	reference	-	PIK3C2G	-4.892	intergenic	intergenic	-	-	-	-	-
+18	chr3	117246810	+	CT-ACAGTcaCTcTTATCACTGG	3	1	4	-	0.6050	0.0010	REF	-	-	reference	-	LSAMP	-107.421	intergenic	gene,transcript(-)	CA	Placental_/_trophoblast	-	-	-
+19	chr3	144844442	-	CT-ACAGccaCTcTTATCACAGG	4	1	5	-	0.6050	0.0010	ALT	-	chr3;144844462;C;T	2 carriers	3.12e-04	DIPK2A	-795.724	intergenic	intergenic	-	-	-	-	-
+20	chr18	56382342	-	-CTAAtAGTaGCcTTTATCAtAGG	4	2	6	-	0.6030	0.0000	ALT	-	chr18;56382347;C;T	22 carriers	3.44e-03	TXNL1	214.843	intergenic	intergenic	-	-	-	-	-
+21	chr21	17537877	-	-CTAACAaaTGCTTTcATCACGGG	3	2	5	-	0.5940	0.0000	ALT	-	chr21;17537892;A;AT	33 carriers	5.15e-03	CXADR	0.0	intron	gene,transcript(+)	-	Primitive_/_embryonic	-	-	-
+22	chr18	8976901	+	-TAACAGaTaCTcTTATCACTCGG	3	2	5	-	0.5890	0.0000	REF	-	-	reference	-	NDUFV2	125.705	intergenic	gene,transcript(+),transcript(-)	dELS	Renal_/_cancer	-	-	-
+23	chr4	102136649	-	a-AACtGTcaCTTTTATCACATGG	4	2	6	-	0.5870	-	ALT	-	chr4;102136666;G;A	310 carriers	5.23e-02	BANK1	-61.838	intergenic	intergenic	-	-	-	-	-
+24	chr1	123332065	+	-TTAAtAaTTGCTTTaATCAaAGG	4	2	6	-	0.5840	0.0000	ALT	AGG	chr1;123332068;G;A,chr1;123332070;A;T,chr1;123332071;C;A,chr1;123332073;A;T,chr1;123332075;C;G,chr1;123332081;C;A,chr1;123332082;A;T,chr1;123332085;G;A,chr1;123332088;C;G	505 carriers	6.25e-04	SRGAP2C	-1939.192	intergenic	intergenic	-	-	-	-	13 in window
+25	chr8	51024148	-	gCTAACAGaTaaTTTTATCA-GGG	4	2	6	-	0.5810	0.0000	REF	-	-	reference	-	SNTG1	-227.457	intergenic	intergenic	-	-	-	-	-
+26	chr2	148970430	-	aTAACAaT-GCcTTTATCACAGG	3	1	4	-	0.5770	0.0000	REF	-	-	reference	-	KIF5C	0.0	intron	gene,transcript(+)	-	Primitive_/_embryonic	-	-	-
+27	chr2_GL582966v2_alt	42442	-	aTAACAaT-GCcTTTATCACAGG	3	1	4	-	0.5770	0.0000	REF	-	-	reference	-	KIF5C	0.0	-	-	-	-	-	-	-
+28	chr4	179131905	+	gA-AAaAaTTGCTTTTATCAaGGG	4	2	6	-	0.5680	0.0000	REF	-	-	reference	-	AGA	-1689.469	intergenic	intergenic	-	-	-	-	-
+29	chr11	14574238	+	C-AACAGcctCTcTTATCACAGG	4	1	5	-	0.5640	0.0000	REF	-	-	reference	-	PSMA1	0.0	intron	gene,transcript(-)	-	-	-	-	-
+30	chr18	62433839	-	CT-ACgGTTaCcTTTATCACATGG	3	2	5	-	0.5610	-	REF	-	-	reference	-	TNFRSF11A	-42.552	intergenic	intergenic	CA-CTCF	-	-	-	-
+31	chr4	174253217	+	-TAAAaAaTTaCTTTTATCAtAGG	4	2	6	-	0.5570	-	REF	-	-	reference	-	FBXO8	0.0	intron	gene,transcript(-)	CA	-	-	-	-
+32	chr6_GL000251v2_alt	1447671	-	CATAACAGTTaCTTTTATCg-AGG	2	2	4	-	0.5560	0.0000	REF	-	-	reference	-	HLA-A	0.0	-	-	-	-	-	-	-
+33	chr6_GL000252v2_alt	1223823	-	CATAACAGTTaCTTTTATCg-AGG	2	2	4	-	0.5560	0.0000	REF	-	-	reference	-	HLA-A	0.0	-	-	-	-	-	-	-
+34	chr6_GL000253v2_alt	1229022	-	CATAACAGTTaCTTTTATCg-AGG	2	2	4	-	0.5560	0.0000	REF	-	-	reference	-	HLA-A	-28.581	intergenic	intergenic	-	-	-	-	-
+35	chr6_GL000254v2_alt	1312340	-	CATAACAGTTaCTTTTATCg-AGG	2	2	4	-	0.5560	0.0000	REF	-	-	reference	-	HLA-A	-22.362	intergenic	intergenic	-	-	-	-	-
+36	chr6_GL000255v2_alt	1223265	-	CATAACAGTTaCTTTTATCg-AGG	2	2	4	-	0.5560	0.0000	REF	-	-	reference	-	HLA-A	0.0	-	-	-	-	-	-	-
+37	chr6_GL000256v2_alt	1266083	-	CATAACAGTTaCTTTTATCg-AGG	2	2	4	-	0.5560	0.0000	REF	-	-	reference	-	HLA-A	0.0	-	-	-	-	-	-	-
+38	chr20	25053575	+	aG-AAaAGTTaCTTTaATCACTGG	4	2	6	-	0.5560	0.0000	REF	-	-	reference	-	ACSS1	0.0	intron	gene,transcript(-)	dELS	-	-	-	-
+39	chr2	45833198	-	CCTAAtAGa-aCTTTTATCAaTGG	4	2	6	-	0.5390	0.0000	REF	-	-	reference	-	PRKCE	0.0	intron	gene,transcript(+)	-	-	-	-	-
+40	chr1	233161377	-	g-AACAGTcGCcTTTAcCACTGG	4	1	5	-	0.5370	0.0000	ALT	-	chr1;233161382;C;T,chr1;233161396;C;G	35 carriers	6.25e-04	PCNX2	0.0	intron	gene,transcript(-)	-	-	-	-	-
+41	chr14	23625816	-	-TAACAaTTaCaaTTATCACTGG	4	1	5	-	0.5170	0.0000	REF	-	-	reference	-	DHRS2	4.276	intergenic	intergenic	-	-	-	-	-
+42	chr8	76473511	-	C-AACAaTatCTTTTAcCACTGG	4	1	5	-	0.5080	0.0000	REF	-	-	reference	-	ZFHX4	207.705	intergenic	gene,transcript(+)	-	-	-	-	-
+43	chr4	64138442	-	g-AACAaTTaCTTaTATCACTAGG	4	2	6	-	0.5030	0.0000	REF	-	-	reference	-	TECRL	136.791	intergenic	intergenic	-	-	-	-	-
+44	chr1	151085422	-	aTAAAtAacTGCTTTTATCA-TGG	4	2	6	-	0.5140	-	REF	-	-	reference	-	GABPB2	0.0	intron	gene,transcript(+)	-	-	-	-	-
+45	chr13	61796559	+	CaAACA-TcGCTTTTATCACGGG	2	1	3	-	0.3840	0.0000	REF	-	-	reference	-	AL592490.1	-368.71	intergenic	intergenic	-	Organ_devel._/_renal	-	-	-
+46	chr12	64064593	-	aTAACAGTT-CTTaTATCACAGG	2	1	3	-	0.3640	0.0000	ALT	-	chr12;64064609;C;CTGT	90 carriers	1.42e-02	SRGAP1	0.0	intron	gene,transcript(+),transcript(-)	-	-	-	-	-
+47	chr2	52353784	+	gTAACAGTTGCTTTTgTCACCAGG	2	1	3	-	0.3440	0.0000	REF	-	-	reference	-	NRXN1	-1128.211	intergenic	gene,transcript(+)	-	-	-	-	-
+48	chr4	177401725	+	CTAACAacTGCTgTTATCACAGG	3	0	3	-	0.2610	0.0070	ALT	-	chr4;177401742;G;T	4 carriers	7.81e-04	AGA	29.026	intergenic	intergenic	dELS	Primitive_/_embryonic	-	-	-
+49	chrX	49982798	+	tTcACA-TTGCTTTTATCACTGG	2	1	3	-	0.2110	0.0000	REF	-	-	reference	-	CLCN5	0.0	intron	gene,transcript(+)	-	-	-	-	-
+50	chr13	46442758	-	CTAACA-TTGCTTTTAcCtCAGG	2	1	3	-	0.1870	0.0000	ALT	-	chr13;46442762;A;G	2 carriers	3.12e-04	RUBCNL	-4.569	intergenic	gene,transcript(+)	-	-	-	-	-
+51	chr17	65712444	+	CTAACA-TTGCTTaTATCtCAGG	2	1	3	-	0.1640	0.0000	REF	-	-	reference	-	CEP112	0.0	intron	gene,transcript(-)	dELS	-	-	-	-
+52	chr1	168084549	-	C-AACAGTTaCTaTTATCACAAG	2	1	3	-	0.1600	0.0000	REF	-	-	reference	-	GPR161	0.0	exon	UTR,exon,gene,transcript(-)	dELS	Vascular_/_endothelial	-	-	-
+53	chr7	26410212	-	agAACAGT-GCTTTTATCACAAG	2	1	3	-	0.1330	0.0000	ALT	-	chr7;26410218;A;G	2 carriers	3.12e-04	SNX10	-35.83	intergenic	gene,transcript(+)	dELS	-	-	-	-
+54	chr13	30199212	-	CTAACAGTTaCTTTTATtcCTGG	3	0	3	-	0.1240	0.0000	REF	-	-	reference	-	KATNAL1	3.395	intergenic	intergenic	TF	Cardiac	-	-	-
+55	chr8	75272198	+	tTAACAGTT-CaTTTATCACAAG	2	1	3	-	0.1220	0.0000	ALT	-	chr8;75272217;T;C	2 carriers	3.12e-04	HNF4G	135.694	intergenic	gene,transcript(-)	-	-	-	-	-
+56	chr3	85803427	-	CTAACAGTT-CcTTTATCcCTGG	2	1	3	-	0.1150	0.0000	REF	-	-	reference	-	CADM2	0.0	intron	gene,transcript(+),transcript(-)	-	-	-	CADM2	-
+57	chr4	103625894	+	aTAACtGT-GCTTTTATCACAAG	2	1	3	-	0.1130	0.0000	ALT	-	chr4;103625913;G;C	6 carriers	9.37e-04	TACR3	0.0	intron	gene,transcript(-)	dELS	Primitive_/_embryonic	-	-	-
+58	chr2	79543480	-	CTAACtGcTGCTTTTATaACCAG	3	0	3	-	0.1000	0.0000	REF	-	-	reference	-	CTNNA2	0.0	intron	gene,transcript(+)	-	-	-	CTNNA2	-
+59	chr6	16094197	-	tTAACAGTTG-TTTTATCAaTGG	2	1	3	-	0.0850	0.0000	REF	-	-	reference	-	MYLIP	34.866	intergenic	gene,transcript(+)	-	-	-	-	-
+60	chr11	121073759	+	CTAAgAGTTtCTTTTATtACGAG	3	0	3	-	0.0810	0.0000	REF	-	-	reference	-	TBCEL	0.0	intron	gene,transcript(+)	-	-	-	-	-
+61	chr4	129256098	-	CTAAgAtTTtCTTTTATCACTAG	3	0	3	-	0.0720	0.0000	REF	-	-	reference	-	C4orf33	-139.459	intergenic	intergenic	-	-	-	-	-
+62	chr2	226417542	-	C-AACAGTTTGaTTTTATCACTAG	1	2	3	-	0.0710	0.0000	REF	-	-	reference	-	IRS1	313.751	intergenic	intergenic	-	-	-	-	-
+63	chr4	111842618	-	CTAACA-TTGCaTTTATCATCAAG	1	2	3	-	0.0610	-	ALT	-	chr4;111842632;C;G	2 carriers	3.12e-04	FAM241A	302.812	intergenic	gene,transcript(-)	CA	Stromal_B	-	-	-
+64	chr18	32916654	+	CTtACA-TTGCTTTTATtACAAG	2	1	3	-	0.0580	0.0000	REF	-	-	reference	-	CCDC178	20.726	intergenic	exon,gene,transcript(+)	-	-	-	-	-
+65	chr1	43747940	-	CTAAaAGTTGagTTTATCACCAG	3	0	3	-	0.0560	0.0000	ALT	CAG	chr1;43747941;T;C	44 carriers	6.87e-03	ST3GAL3	0.0	intron	gene,transcript(+)	dELS	Cancer_/_epithelial	-	-	-
+66	chr2	14654771	-	CTAACAGTT-tTTTTgTCACAGG	2	1	3	-	0.0350	0.0000	ALT	-	chr2;14654789;A;G	344 carriers	5.97e-02	LRATD1	-3.958	intergenic	intergenic	-	-	-	-	-
+67	chr3	104334775	-	CTAACAaTTG-TTTTATaACCAG	2	1	3	-	0.0240	0.0000	REF	-	-	reference	-	ALCAM	1032.111	intergenic	intergenic	-	-	-	-	-
+68	chr8	11299880	-	CTAACA-TTGtgTTTATCACCAG	2	1	3	-	0.0200	0.0000	REF	-	-	reference	-	MTMR9	0.0	intron	gene,transcript(+)	-	-	-	-	-
+69	chr14	28274167	-	CTAACA-TTGCTTcTAaCACCAG	2	1	3	-	0.0190	0.0000	REF	-	-	reference	-	FOXG1	492.597	intergenic	intergenic	-	-	-	-	-
+70	chr1	213641941	+	CTAACA-TTGCTTcTATgACTGG	2	1	3	-	0.0190	0.0000	ALT	-	chr1;213641944;TA;T	595 carriers	1.06e-01	PROX1	341.218	intergenic	gene,transcript(+),transcript(-)	-	-	-	-	-
+71	chr10	17367607	-	CTAACAGT-GaTTTTATgACAAG	2	1	3	-	0.0160	0.0000	ALT	-	chr10;17367617;C;A	50 carriers	7.96e-03	ST8SIA6	0.0	intron	gene,transcript(+),transcript(-)	-	-	-	-	-
+72	chr12	74831072	+	CTAACAGTTG-TTTTATgtCTGG	2	1	3	-	0.0120	0.0000	REF	-	-	reference	-	KCNC2	208.983	intergenic	intergenic	-	-	-	-	-
+73	chr12	35319619	-	CTAACAGT-GCTTTTAgCATCTAG	1	2	3	-	0.0110	-	ALT	-	chr12;35319622;G;A,chr12;35319625;G;T,chr12;35319626;A;G,chr12;35319629;T;A,chr12;35319630;C;A,chr12;35319635;G;A,chr12;35319638;T;G,chr12;35319640;G;T	177 carriers	1.56e-04	ALG10	-1289.926	intergenic	intergenic	-	-	-	-	15 in window
+74	chr12	39267607	+	CaAACAGTTGCTcTT-TCACTGG	2	1	3	-	0.0100	0.0000	REF	-	-	reference	-	KIF21A	25.599	intergenic	intergenic	-	-	-	-	-
+75	chr13	106090756	-	CTgACAGTTGCTg-TATCACTGG	2	1	3	-	0.0100	0.0000	REF	-	-	reference	-	EFNB2	398.966	intergenic	exon,gene,transcript(-)	dELS	Placental_/_trophoblast	-	-	-
+76	chr3	139612655	+	CTAgCAGTTGCTTTT-cCACAGG	2	1	3	-	0.0070	0.0000	REF	-	-	reference	-	NMNAT3	0.0	intron	gene,transcript(+),transcript(-)	-	-	-	-	-
+77	chr7	125984846	-	CTAAtAGTTG-TTTTgTCACCAG	2	1	3	-	0.0050	0.0000	REF	-	-	reference	-	GRM8	453.729	intergenic	gene,transcript(+)	CA-CTCF	-	-	-	-
+78	chr1	193995670	+	CTAgaAGTTGCTTTT-TCACAGG	2	1	3	-	0.0050	0.0000	REF	-	-	reference	-	CDC73	-740.855	intergenic	gene,transcript(+)	-	-	-	-	-
+79	chr1	152347729	+	aTAACAGTaGCTTTT-TCACTAG	2	1	3	-	0.0040	0.0000	REF	-	-	reference	-	FLG2	0.984	intergenic	gene,transcript(+)	TF	-	-	-	-
+80	chr1	180126845	-	CTAACAGTTtCTgTT-TCACAGG	2	1	3	-	0.0030	0.0000	REF	-	-	reference	-	CEP350	-11.971	intergenic	intergenic	dELS	Digestive	-	-	-
+81	chr2	216196021	-	CTAACAGaTtCTTTT-TCACCAG	2	1	3	-	0.0030	0.0000	ALT	-	chr2;216196030;T;A,chr2;216196032;G;A	13 carriers	6.25e-04	XRCC5	0.0	intron	gene,transcript(+)	dELS	Neural	-	-	-
+82	chrUn_GL000224v1	91028	+	CTAACAGcTGaTTTT-TCACCAG	2	1	3	-	0.0030	0.0000	REF	-	-	reference	-	-	-	-	-	-	-	-	-	-
+83	chrUn_KI270741v1	32916	+	CTAACAGcTGaTTTT-TCACCAG	2	1	3	-	0.0030	0.0000	REF	-	-	reference	-	-	-	-	-	-	-	-	-	-
+84	chr10	33069717	-	gTAACAGTTGCTgTTATCA-GAG	2	1	3	-	0.0020	0.0000	REF	-	-	reference	-	ITGB1	-63.926	intergenic	gene,transcript(+),transcript(-)	-	-	-	-	-
+85	chr4	109498849	+	CTAACAGTTGgTTTT-TgACAGG	2	1	3	-	0.0010	0.0000	REF	-	-	reference	-	SEC24B	0.0	intron	gene,transcript(+)	-	-	-	-	-
+86	chr12	110667873	-	CTAAaAGTTGCTTcT-TCACCAG	2	1	3	-	0.0010	0.0000	REF	-	-	reference	-	HVCN1	0.0	intron	gene,transcript(-)	-	-	-	-	-
+87	chr2	88861063	+	CT-gCAcTcGCTTTTATCACGGG	3	1	4	-	0.3530	0.1750	ALT	GGG	chr2;88861064;A;C,chr2;88861067;A;C,chr2;88861068;T;A,chr2;88861069;T;C,chr2;88861070;C;T,chr2;88861071;G;C,chr2;88861072;T;G,chr2;88861075;A;T,chr2;88861078;T;A,chr2;88861079;G;T,chr2;88861081;T;A,chr2;88861083;A;G,chr2;88861085;C;G	264 carriers	6.25e-04	RPIA	-110.134	intergenic	gene,transcript(-)	-	-	-	-	22 in window
+88	chr2	77279168	+	ag-ACAGTTcCTTTTATCACTGG	3	1	4	-	0.2990	0.0430	ALT	-	chr2;77279187;T;C	3 carriers	4.68e-04	LRRTM4	0.0	intron	gene,transcript(-)	-	Lymphoid	-	-	-
+89	chr4	166006613	+	tTTAACAGTTGCTTcTATCA-TGG	2	2	4	-	0.1890	0.0300	ALT	-	chr4;166006626;C;T	3 carriers	4.68e-04	TLL1	0.0	intron	gene,transcript(+)	CA-TF	-	-	-	-
+90	chr20	6492314	+	ag-ACAGTgGCTTTTATCACAGG	3	1	4	-	0.4620	0.0220	REF	-	-	reference	-	BMP2	275.35	intergenic	gene,transcript(+)	dELS	Tissue_invariant	-	-	-
+91	chr6	133919182	+	-CTAgCAGTTataTTTATCACAGG	4	2	6	-	0.2580	0.0080	ALT	-	chr6;133919200;T;C	71 carriers	1.16e-02	TCF21	-23.63	intergenic	gene,transcript(-)	CA-TF	Vascular_/_endothelial	-	-	-
+92	chr2	12899532	+	tTAACAGcTGCTgTTATCAT-AGG	3	2	5	-	0.1570	0.0070	REF	-	-	reference	-	TRIB2	-156.799	intergenic	gene,transcript(+),transcript(-)	-	-	-	-	-
+93	chr4	167166564	-	tT-ACAGgTGCTTTTATaACCGG	3	1	4	-	0.3510	0.0050	ALT	-	chr4;167166566;T;C	2 carriers	3.12e-04	SPOCK3	0.0	intron	gene,transcript(-)	dELS	Neural	-	-	-
+94	chr15	87756671	-	gcAACAGaTGACTTTTATCACAGG	3	1	4	-	0.1870	0.0040	REF	-	-	reference	-	NTRK3	103.056	intergenic	intergenic	-	-	-	-	-
+95	chr3	78970404	+	taAACAGcT-CTTTTATCACAGG	3	1	4	-	0.4970	0.0030	REF	-	-	reference	-	ROBO1	0.0	intron	gene,transcript(-)	-	-	-	-	-
+96	chr8	140143017	-	CTAACAGcTGCTTTTATCCt-GGG	2	2	4	-	0.2630	0.0030	REF	-	-	reference	-	TRAPPC9	0.0	intron	gene,transcript(-)	dELS	Cardiac	-	-	-
+97	chrX	101733819	-	-CTAACAtcTGCTTTTATCcCAGG	3	2	5	-	0.1260	0.0030	REF	-	-	reference	-	ARMCX2	-73.97	intergenic	gene,transcript(+)	dELS	Placental_/_trophoblast	-	-	-
+98	chr7	8295923	-	aA-AACAGTTGCcTgTATCACAGG	3	2	5	-	0.0260	0.0030	REF	-	-	reference	-	ICA1	-33.237	intergenic	gene,transcript(+)	dELS	Digestive,Tissue_invariant	-	-	-
+99	chr11	73026355	+	tT-ACAGTTGCTcTTAcCACTGG	3	1	4	-	0.4950	0.0010	ALT	-	chr11;73026370;G;A	2 carriers	3.12e-04	FCHSD2	0.0	intron	gene,transcript(-)	-	-	-	-	-
+100	chr1	119592005	+	Cc-AaAGTTGCcTTTATCACAGG	3	1	4	-	0.4120	0.0010	REF	-	-	reference	-	ZNF697	27.35	intergenic	intergenic	-	-	-	-	-
+101	chr6	20203310	+	CTAAtAGcTGCaTTTATaACTGG	4	0	4	-	0.2740	0.0010	REF	-	-	reference	-	MBOAT1	0.0	intron	gene,transcript(-)	dELS	-	-	-	-

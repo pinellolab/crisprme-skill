@@ -1,0 +1,27 @@
+# CRISPRme runtime config + container images (machine-specific, large)
+.crisprme_runtime
+*.sif
+
+# CRISPRme data + outputs (never belongs in git)
+Genomes/
+genome_library/
+Dictionaries/
+VCFs/
+samplesIDs/
+Annotations/
+PAMs/
+Assemblies/
+LiftoverFiles/
+Results/
+build-inputs/
+list_vcf.txt
+list_samplesID.txt
+.hf_cache/
+.hf_stage_index/
+
+# this skill's own job tracking
+runs/
+
+__pycache__/
+*.pyc
+.DS_Store

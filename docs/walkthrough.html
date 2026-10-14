@@ -1,0 +1,993 @@
+<title>CRISPRme Skill Walkthrough</title>
+<style>
+  /* Layout: one reading column; each scenario is a conversation with expandable
+     cards for the commands Claude runs in the background. */
+  :root {
+    --bg: #F6F7F5; --surface: #FFFFFF; --surface-inset: #EEF1EF;
+    --ink: #161B19; --ink-muted: #5B6663; --border: #D8DEDA;
+    --accent: #1B7A72; --accent-soft: #E4F1EE;
+    --success: #3E8B5C; --success-soft: #E4F1E8;
+    --warning: #A6791F; --warning-soft: #F5EEDD;
+    --danger: #B14A3B; --danger-soft: #F6E7E3;
+    --shadow: 0 1px 2px rgba(22,27,25,.06);
+    --serif: Charter, "Iowan Old Style", "Palatino Linotype", Georgia, serif;
+    --sans: "Avenir Next", "Segoe UI", "Helvetica Neue", Arial, sans-serif;
+    --mono: "SF Mono", "Cascadia Code", Consolas, "Roboto Mono", monospace;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg: #101413; --surface: #171D1B; --surface-inset: #0D1110;
+      --ink: #E8ECE9; --ink-muted: #93A19C; --border: #2A332F;
+      --accent: #4FB6AB; --accent-soft: #16302C;
+      --success: #6FBE8B; --success-soft: #14261B;
+      --warning: #D9A94A; --warning-soft: #2B230F;
+      --danger: #E08872; --danger-soft: #2B1613;
+      --shadow: 0 1px 2px rgba(0,0,0,.4); color-scheme: dark;
+    }
+  }
+  :root[data-theme="dark"] {
+    --bg: #101413; --surface: #171D1B; --surface-inset: #0D1110;
+    --ink: #E8ECE9; --ink-muted: #93A19C; --border: #2A332F;
+    --accent: #4FB6AB; --accent-soft: #16302C;
+    --success: #6FBE8B; --success-soft: #14261B;
+    --warning: #D9A94A; --warning-soft: #2B230F;
+    --danger: #E08872; --danger-soft: #2B1613;
+    --shadow: 0 1px 2px rgba(0,0,0,.4); color-scheme: dark;
+  }
+  * { box-sizing: border-box; }
+  body { margin:0; background:var(--bg); color:var(--ink); font-family:var(--serif);
+         font-size:17px; line-height:1.55; -webkit-font-smoothing:antialiased; }
+  .sans { font-family:var(--sans); }
+  .mono, code { font-family:var(--mono); font-size:.86em; }
+  header.page { position:sticky; top:env(safe-area-inset-top,0px); z-index:5;
+    background:color-mix(in srgb, var(--bg) 88%, transparent); backdrop-filter:blur(6px);
+    border-bottom:1px solid var(--border); padding:14px max(16px, calc((100% - 760px)/2));
+    display:flex; align-items:baseline; justify-content:space-between; gap:12px; }
+  header.page .name { font-family:var(--sans); font-weight:600; font-size:14px; letter-spacing:.02em; }
+  header.page .name .dot { color:var(--accent); }
+  header.page .tag { font-family:var(--sans); font-size:12px; letter-spacing:.06em;
+    text-transform:uppercase; color:var(--ink-muted); }
+  main { max-width:760px; margin:0 auto; padding-block:48px 96px; padding-left:16px; padding-right:16px; }
+  .intro { margin-bottom:40px; padding-bottom:32px; border-bottom:1px solid var(--border); }
+  .intro h1 { font-size:32px; line-height:1.2; margin:0 0 14px; text-wrap:balance; font-weight:600; }
+  .intro p { color:var(--ink-muted); font-size:18px; max-width:62ch; margin:0 0 12px; }
+  .intro p:last-child { margin-bottom:0; }
+  nav.toc { margin:0 0 48px; font-family:var(--sans); font-size:14px; }
+  nav.toc .label { font-size:12px; font-weight:600; letter-spacing:.08em; text-transform:uppercase;
+    color:var(--ink-muted); margin-bottom:10px; }
+  nav.toc ol { margin:0; padding-left:22px; columns:2 250px; column-gap:32px; }
+  nav.toc li { margin-bottom:6px; break-inside:avoid; }
+  nav.toc a { color:var(--ink); text-decoration-color:var(--border); text-underline-offset:3px; }
+  nav.toc a:hover { color:var(--accent); }
+  .scenario { margin:64px 0; scroll-margin-top:72px; }
+  .scenario-head { display:flex; align-items:center; gap:14px; margin-bottom:14px; }
+  .scenario-head .eyebrow { font-family:var(--sans); font-size:12px; font-weight:600;
+    letter-spacing:.08em; text-transform:uppercase; color:var(--accent); white-space:nowrap; }
+  .scenario-head .rule { height:1px; background:var(--border); flex:1; }
+  .scenario h2 { font-size:22px; margin:0 0 8px; font-weight:600; text-wrap:balance; }
+  .scenario .lede { font-family:var(--sans); color:var(--ink-muted); font-size:15px;
+    margin:0 0 18px; max-width:62ch; }
+  .turn { display:grid; grid-template-columns:108px 1fr; gap:18px; padding:18px 0; }
+  .turn + .turn { border-top:1px solid var(--border); }
+  .turn > * { min-width:0; }
+  .who { font-family:var(--sans); font-size:12px; font-weight:600; letter-spacing:.04em; padding-top:3px; }
+  .who.user { color:var(--ink); }
+  .who.assistant { color:var(--accent); }
+  .bubble p { margin:0 0 10px; }
+  .bubble p:last-child { margin-bottom:0; }
+  .bubble ul { margin:0 0 10px; padding-left:20px; }
+  .bubble li { margin-bottom:4px; }
+  .bubble blockquote { margin:0; padding-left:14px; border-left:2px solid var(--border);
+    font-style:italic; color:var(--ink); }
+  .tool { margin:4px 0 4px 126px; min-width:0; }
+  details.tool-card { background:var(--surface); border:1px solid var(--border);
+    border-radius:6px; box-shadow:var(--shadow); overflow:hidden; }
+  details.tool-card > summary { list-style:none; cursor:pointer; padding:10px 14px; display:flex;
+    align-items:center; gap:10px; font-family:var(--sans); font-size:12.5px;
+    color:var(--ink-muted); user-select:none; }
+  details.tool-card > summary::-webkit-details-marker { display:none; }
+  details.tool-card > summary::before { content:"\25B8"; color:var(--accent);
+    transition:transform .15s ease; flex:none; }
+  details.tool-card[open] > summary::before { transform:rotate(90deg); }
+  details.tool-card > summary .label { letter-spacing:.03em; flex:none; }
+  details.tool-card > summary .cmd { font-family:var(--mono); color:var(--ink); font-size:12.5px;
+    overflow:hidden; text-overflow:ellipsis; white-space:nowrap; min-width:0; }
+  details.tool-card > summary:focus-visible { outline:2px solid var(--accent); outline-offset:-2px; }
+  .tool-body { border-top:1px solid var(--border); background:var(--surface-inset);
+    padding:14px 16px; overflow-x:auto; }
+  .tool-body pre { margin:0; font-family:var(--mono); font-size:12.5px; line-height:1.6;
+    white-space:pre; color:var(--ink); }
+  .tool-body .in { color:var(--ink-muted); }
+  .tool-body .hl { color:var(--accent); font-weight:600; }
+  .tool-body .bad { color:var(--danger); font-weight:600; }
+  .tool-body .good { color:var(--success); font-weight:600; }
+  .pill { display:inline-flex; align-items:center; gap:6px; font-family:var(--sans);
+    font-size:11.5px; font-weight:600; letter-spacing:.04em; text-transform:uppercase;
+    padding:3px 9px 3px 8px; border-radius:100px; margin-left:4px; vertical-align:1px; }
+  .pill::before { content:""; width:6px; height:6px; border-radius:50%; background:currentColor; }
+  .pill.running { background:var(--warning-soft); color:var(--warning); }
+  .pill.done { background:var(--success-soft); color:var(--success); }
+  .pill.failed { background:var(--danger-soft); color:var(--danger); }
+  .callout { margin:10px 0 4px 126px; padding:12px 16px; background:var(--accent-soft);
+    border-left:3px solid var(--accent); border-radius:0 6px 6px 0; font-size:15px; }
+  .callout strong { color:var(--accent); }
+  .branch-label { margin:24px 0 -6px 126px; font-family:var(--sans); font-size:12px;
+    font-weight:600; letter-spacing:.05em; text-transform:uppercase; color:var(--ink-muted); }
+  .table-wrap { overflow-x:auto; margin:0 0 4px 126px; }
+  table.tiers { width:100%; border-collapse:collapse; font-family:var(--sans); font-size:14px; }
+  table.tiers th, table.tiers td { text-align:left; vertical-align:top; padding:8px 10px;
+    border-bottom:1px solid var(--border); }
+  table.tiers th { font-size:12px; letter-spacing:.05em; text-transform:uppercase;
+    color:var(--ink-muted); font-weight:600; }
+  table.tiers td:first-child { font-weight:600; }
+  @media (max-width:560px) {
+    .turn { grid-template-columns:1fr; gap:6px; }
+    .tool, .callout, .branch-label, .table-wrap { margin-left:0; }
+  }
+  .summary-box { margin-top:72px; padding:28px; background:var(--surface);
+    border:1px solid var(--border); border-radius:10px; box-shadow:var(--shadow); }
+  .summary-box h2 { margin:0 0 16px; font-size:18px; font-family:var(--sans); letter-spacing:.01em; }
+  .summary-box ul { margin:0; padding-left:20px; }
+  .summary-box li { margin-bottom:10px; }
+  .summary-box li:last-child { margin-bottom:0; }
+  .summary-box strong { color:var(--accent); }
+  footer.page { max-width:760px; margin:0 auto; padding:0 16px 56px; font-family:var(--sans);
+    font-size:12.5px; color:var(--ink-muted); }
+  @media (prefers-reduced-motion: reduce) { * { transition:none !important; } }
+</style>
+
+<header class="page">
+  <span class="name">crisprme<span class="dot">&middot;</span>skill</span>
+  <span class="tag">Agent Skill Walkthrough</span>
+</header>
+
+<main>
+  <div class="intro">
+    <h1>What happens when someone uses the CRISPRme skill</h1>
+    <p>The skill lets someone install and run CRISPRme+ v2.7.9 by asking in plain language. Each
+    scenario below shows what the person asks, what Claude answers, and the commands Claude runs
+    in the background. Click any background step to see what happened.</p>
+    <p>Unless a card says otherwise, the command output is real, captured from test runs on the
+    lab server on 2026-10-13, with long paths shortened. The conversation wording is written for
+    illustration.</p>
+  </div>
+
+  <nav class="toc" aria-label="Scenarios">
+    <div class="label">Scenarios</div>
+    <ol>
+      <li><a href="#install">Starting from scratch</a></li>
+      <li><a href="#smoke">Checking the install works</a></li>
+      <li><a href="#intake">Working out what a search needs</a></li>
+      <li><a href="#search">Running a search, reading the result</a></li>
+      <li><a href="#failfast">When an input is wrong</a></li>
+      <li><a href="#persample">Which people carry it</a></li>
+      <li><a href="#nuclease">A different nuclease</a></li>
+      <li><a href="#species">A non-human genome</a></li>
+      <li><a href="#assembly">A personal genome assembly</a></li>
+      <li><a href="#validate">Cross-checking against brute force</a></li>
+      <li><a href="#ranking">Comparing candidate guides</a></li>
+    </ol>
+  </nav>
+
+  <section class="scenario" id="install">
+    <div class="scenario-head"><span class="eyebrow">Starting from scratch</span><span class="rule"></span></div>
+    <h2>Setting up CRISPRme+ without adding to the pile</h2>
+    <p class="lede">The skill installs CRISPRme+ as the official container image. On this server
+    that means Apptainer, since there is no Docker. Before creating anything, it checks what is
+    already installed.</p>
+
+    <div class="turn">
+      <div class="who user sans">You</div>
+      <div class="bubble"><blockquote>I don't have CRISPRme set up yet. Can you set it up for me?</blockquote></div>
+    </div>
+
+    <div class="tool">
+      <details class="tool-card">
+        <summary><span class="label sans">background &middot; runs script</span>
+          <span class="cmd">scripts/find_existing_crisprme_installs.sh</span></summary>
+        <div class="tool-body"><pre><span class="in">$ scripts/find_existing_crisprme_installs.sh</span>
+
+== Docker images ==
+docker not available
+
+== Apptainer/Singularity images (.sif) ==
+none found under: .
+
+== Conda envs with crisprme.py ==
+crisprme               v2.1.7    legacy 2.1.x (not CRISPRme+)
+crisprme-2.2.0         v2.4.0    CRISPRme+, pre-2.6 (old defaults/scorer, retired indexes)
+crisprme-218-121025    v2.1.8    legacy 2.1.x (not CRISPRme+)
+crisprme-262-092926    v2.6.2    <span class="hl">CRISPRme+</span>
+crisprme-gui-test      v2.1.9    legacy 2.1.x (not CRISPRme+)
+crisprme-v2111-071626  v2.1.11   legacy 2.1.x (not CRISPRme+)
+  ... 17 environments in total</pre></div>
+      </details>
+    </div>
+
+    <div class="turn">
+      <div class="who assistant sans">Claude</div>
+      <div class="bubble">
+        <p>There are already 17 CRISPRme environments on this server. Most are the old 2.1.x
+        line, which this skill does not use. The newest usable one is v2.6.2, and the current
+        release is v2.7.9, which changed both the default search depth and the default variant
+        panel.</p>
+        <p>I would use the official v2.7.9 container instead: one file of about 4.5 GB, it leaves
+        everyone else's environments alone, and it carries everything CRISPRme needs. Shall I set
+        that up here?</p>
+      </div>
+    </div>
+
+    <div class="turn">
+      <div class="who user sans">You</div>
+      <div class="bubble"><blockquote>Yes, use the container.</blockquote></div>
+    </div>
+
+    <div class="tool">
+      <details class="tool-card">
+        <summary><span class="label sans">background &middot; runs script</span>
+          <span class="cmd">scripts/install_crisprme.sh</span></summary>
+        <div class="tool-body"><pre><span class="in">$ scripts/install_crisprme.sh</span>
+Pulling docker://pinellolab/crisprme:v2.7.9 -&gt; ./crisprme_v2.7.9.sif (~4.9 GB, ~10-15 min) ...
+
+CRISPRme runtime recorded in ./.crisprme_runtime:
+runtime: apptainer
+image:   ./crisprme_v2.7.9.sif
+crisprme.py --version: <span class="good">v2.7.9</span>
+
+Next steps (run from this directory):
+  - Quick check: scripts/crisprme_cmd.sh --help
+  - Reference data (hg38 + annotations + PAMs + the NRG_3_hg38 reference index, ~26 GB):
+      scripts/run_crisprme_job.sh download dl-ref --what all --path .
+  - Then ONE variant index for variant-aware searches (default shown; ~87 GB more):
+      scripts/run_crisprme_job.sh download dl-index --what index \
+        --index-name NRG_3_hg38+hg38_HGDP1kGP --path .</pre></div>
+      </details>
+    </div>
+
+    <div class="tool">
+      <details class="tool-card">
+        <summary><span class="label sans">background &middot; checks the ML scorer</span>
+          <span class="cmd">scripts/crisprme_cmd.sh scorer-env check</span></summary>
+        <div class="tool-body"><pre><span class="in">$ scripts/crisprme_cmd.sh scorer-env check</span>
+Scorer env 'cbulge': OK
+  python:  3.10.22
+  packages: tensorflow=2.13.1, numpy=1.23.5, pandas=2.3.3, ...
+  compute self-test: <span class="good">OK</span> - scorer computes real, distinct scores: [1.0, 0.0019335938850417733]</pre></div>
+      </details>
+    </div>
+
+    <div class="tool">
+      <details class="tool-card">
+        <summary><span class="label sans">background &middot; runs script</span>
+          <span class="cmd">scripts/run_crisprme_job.sh download dl-index-HGDP1kGP --what index &hellip;</span></summary>
+        <div class="tool-body"><pre><span class="in">$ scripts/run_crisprme_job.sh download dl-ref --what all --path .
+$ scripts/run_crisprme_job.sh download dl-index-HGDP1kGP --what index \
+    --index-name NRG_3_hg38+hg38_HGDP1kGP --path .</span>
+Launched 'download' in the background as job 'dl-index-HGDP1kGP'.
+
+<span class="in"># about 15 minutes later, from the job log:</span>
+Installed Tier-1 genotype store genotypes_hg38_HGDP1kGP/ into /DATA/Dictionaries
+Downloaded index -&gt; /DATA/genome_library/NRG_3_hg38+hg38_HGDP1kGP</pre></div>
+      </details>
+    </div>
+
+    <div class="turn">
+      <div class="who assistant sans">Claude</div>
+      <div class="bubble">
+        <p>CRISPRme+ v2.7.9 is installed and its machine-learning scorer passes its own
+        self-test. The reference data and the default variant index are downloading in the
+        background. That index covers HGDP plus 1000 Genomes: 4,091 people, jointly phased.
+        Together they need about 115 GB of disk. I will tell you when they finish, or you can ask
+        me at any time.</p>
+      </div>
+    </div>
+
+    <div class="callout sans">
+      Everything slow runs as a background job, so the conversation never freezes. All CRISPRme
+      commands go through one wrapper script, so the rest of the skill behaves the same on
+      Apptainer, Docker or a source install.
+    </div>
+  </section>
+
+  <section class="scenario" id="smoke">
+    <div class="scenario-head"><span class="eyebrow">Checking the install</span><span class="rule"></span></div>
+    <h2>A quick end-to-end test</h2>
+
+    <div class="turn">
+      <div class="who user sans">You</div>
+      <div class="bubble"><blockquote>Can you make sure it actually works before I run my own guides?</blockquote></div>
+    </div>
+
+    <div class="tool">
+      <details class="tool-card">
+        <summary><span class="label sans">background &middot; runs script</span>
+          <span class="cmd">scripts/run_crisprme_job.sh complete-test smoke-1013 --thread 16</span></summary>
+        <div class="tool-body"><pre><span class="in">$ scripts/run_crisprme_job.sh complete-test smoke-1013 --thread 16</span>
+Launched 'complete-test' in the background as job 'smoke-1013'.
+
+<span class="in">$ scripts/check_run_status.sh smoke-1013      # about 15 minutes later</span>
+status: <span class="good">DONE</span>
+process: not running
+--- last 15 lines of log ---
+Running complete-test smoke against prebuilt index 'NRG_3_hg38+hg38_HGDP1kGP'
+  (PAM NRG, genome hg38, variant); mm=2 bDNA=1 bRNA=1 -&gt; Results/crisprme-test-out
+...
+complete-test PASSED: searched the example guide against 'NRG_3_hg38+hg38_HGDP1kGP' and
+produced CTAACAGTTGCTTTTATCACNNN+NRG_hg38+hg38_HGDP1kGP_2+2_integrated_results.tsv</pre></div>
+      </details>
+    </div>
+
+    <div class="turn">
+      <div class="who assistant sans">Claude</div>
+      <div class="bubble">
+        <p>The built-in test passed <span class="pill done">done</span>. It ran CRISPRme's example
+        guide genome-wide against the variant index you downloaded and took about 15 minutes. You
+        are ready for real searches.</p>
+      </div>
+    </div>
+
+    <div class="callout sans">
+      <strong>A test that "succeeds" without testing anything.</strong> With no index downloaded,
+      <span class="mono">complete-test</span> prints download instructions and exits with code 0,
+      which looks like success. The skill's job runner recognises that message and reports
+      <strong>FAILED</strong> instead.
+    </div>
+  </section>
+
+  <section class="scenario" id="intake">
+    <div class="scenario-head"><span class="eyebrow">Before a search</span><span class="rule"></span></div>
+    <h2>Working out what a search actually needs</h2>
+    <p class="lede"><span class="mono">complete-search</span> has around 20 options, but only a
+    few deserve a question. The skill sorts them into tiers.</p>
+
+    <div class="table-wrap">
+      <table class="tiers">
+        <thead><tr><th>Tier</th><th>What Claude does</th><th>Options</th></tr></thead>
+        <tbody>
+          <tr><td>Always ask</td><td>No sensible default exists</td><td>guide sequences, genome build</td></tr>
+          <tr><td>Default, and say so</td><td>States the assumption so the user can change it</td><td>depth (4 mismatches, 1 DNA + 1 RNA bulge), PAM (SpCas9 NRG), job name</td></tr>
+          <tr><td>Quick check</td><td>Changes what gets searched, so worth a yes or no</td><td>variant-aware or not, which panel, population-level or per-person, annotations</td></tr>
+          <tr><td>Leave alone</td><td>Only raised if the user raises it</td><td>threads, merge window, sorting, base editing, GPU</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="turn">
+      <div class="who user sans">You</div>
+      <div class="bubble"><blockquote>Can you check my guide CTAACAGTTGCTTTTATCAC for off-targets?</blockquote></div>
+    </div>
+
+    <div class="turn">
+      <div class="who assistant sans">Claude</div>
+      <div class="bubble">
+        <p>Yes. Here is what I plan to do, so you can correct anything:</p>
+        <ul>
+          <li><strong>hg38</strong>, SpCas9 with the NRG PAM (NGG plus NAG), the guide padded to
+          <span class="mono">CTAACAGTTGCTTTTATCACNNN</span>.</li>
+          <li>The recommended depth: up to <strong>4 mismatches plus 1 DNA and 1 RNA
+          bulge</strong>. Say if you want deeper or shallower.</li>
+          <li>Functional annotation included: regulatory elements, nearest gene, cancer-driver
+          genes.</li>
+        </ul>
+        <p>Two questions. Should this be <strong>variant-aware</strong>, meaning it searches the
+        genomes of the 4,091 people in the HGDP and 1000 Genomes panel rather than the reference
+        alone? That is CRISPRme's main advantage. If so, is a population-level screen enough, or
+        do you need the <strong>named individuals</strong> who carry each off-target?</p>
+      </div>
+    </div>
+
+    <div class="turn">
+      <div class="who user sans">You</div>
+      <div class="bubble"><blockquote>Yes, variant-aware. Population-level is fine for now.</blockquote></div>
+    </div>
+
+    <div class="callout sans">
+      Deeper searches get a cost check first. Before launching 6 mismatches with 2 and 2 bulges,
+      Claude runs CRISPRme's own estimator; that setting comes back <strong>EXTREME</strong>,
+      around 200 GB of intermediate files with a risk of running out of memory, and Claude says
+      so before starting. COSMIC cancer annotations stay off unless the user confirms they hold a
+      COSMIC licence; Claude never enables them on its own.
+    </div>
+  </section>
+
+  <section class="scenario" id="search">
+    <div class="scenario-head"><span class="eyebrow">A real search</span><span class="rule"></span></div>
+    <h2>Running the search and reading the result</h2>
+
+    <div class="tool">
+      <details class="tool-card">
+        <summary><span class="label sans">background &middot; runs script</span>
+          <span class="cmd">scripts/run_crisprme_job.sh complete-search sg1617-pop-1013 &hellip;</span></summary>
+        <div class="tool-body"><pre><span class="in">$ scripts/run_crisprme_job.sh complete-search sg1617-pop-1013 \
+    --genome Genomes/hg38 --pam PAMs/20bp-NRG-SpCas9.txt --guide guide_sg1617.txt \
+    --vcf vcf_1000G2021.txt --samplesID samplesID_1000G2021.txt \
+    --annotation Annotations/dhs+encode_screenv4+gencode+cosmic.hg38.bed.gz \
+    --gene_annotation Annotations/gencode.protein_coding.bed.gz \
+    --mm 4 --bDNA 1 --bRNA 1 --output sg1617-pop-1013 --thread 16</span>
+
+CRISPRme input validator (lightweight)
+  [OK] hg38_1000G2021: precomputed variant index + dictless registry present
+  [OK] Guide file: guides padded to match PAM 20bp-NRG-SpCas9.txt
+  ...
+Result: <span class="good">PASSED</span>
+[complete-search] COSMIC EXCLUDED from annotation (licence-safe default): dropped 742 COSMIC feature(s).
+[complete-search] POPULATION-LEVEL analysis (default) ...</pre></div>
+      </details>
+    </div>
+
+    <div class="turn">
+      <div class="who assistant sans">Claude</div>
+      <div class="bubble"><p>Started as job <span class="mono">sg1617-pop-1013</span>. A
+      genome-wide variant-aware search takes about an hour here and needs at least 64 GB of
+      memory. I will check whenever you ask.</p></div>
+    </div>
+
+    <div class="turn">
+      <div class="who user sans">You</div>
+      <div class="bubble"><blockquote>Should be done now. What did it find?</blockquote></div>
+    </div>
+
+    <div class="tool">
+      <details class="tool-card" open>
+        <summary><span class="label sans">background &middot; runs script &middot; real captured output</span>
+          <span class="cmd">scripts/analyze_results.py Results/sg1617-pop-1013 --top 6</span></summary>
+        <div class="tool-body"><pre><span class="in">$ scripts/analyze_results.py Results/sg1617-pop-1013 --top 6</span>
+=== CRISPRme results summary: sg1617-pop-1013 ===
+Guide: CTAACAGTTGCTTTTATCACNNN   Counts ranked by: CFD
+CRISPRme version: 2.7.9
+Analysis: variant-aware, population-level default (worst-case representative per site;
+          per-person haplotypes not resolved)
+Variant panel: 1000G2021 (3202 people)
+Search depth: 4 mismatches, 1 DNA / 1 RNA bulges, max 6 total edits
+Nuclease/PAM: SpCas9 / NRG
+
+Total off-target sites: 148567
+  found only because of a population variant (absent from the reference genome): 46502
+  where a variant creates a brand-new PAM site: 4843
+
+<span class="good">On-target: exactly one perfect match (the presumed on-target site).</span>
+
+Off-target site totals by population (REF = reference genome, no variant needed):
+  (population-level run: these are worst-case upper bounds -- typically ~1.5x the --per-sample counts)
+  REF: 102065   AFR: 30270   AMR: 23225   SAS: 20019   EUR: 18759   EAS: 16815
+
+SNP+indel co-occurrence off-targets (need two variants together): 326 (CONFIRMED 312, PUTATIVE 14)
+SNP+SNP co-occurrence off-targets (need two variants together): 102749 (PUTATIVE 102749)
+
+Recommended validation panel: 101 sites (data/panel_top100.tsv in the report zip). Top 6:
+  1. chr2:60495260(-)   0mm+0b  CFD=1.0000  Observed=reference    BCL11A/intron    [PERFECT MATCH; cancer-driver gene]
+  2. chr2:210530658(-)  2mm+1b  CFD=0.9470  Observed=96 carriers  CPS1/intron      [variant chr2;210530659;G;C]
+  3. chr2:161236052(-)  1mm+1b  CFD=0.0600  Observed=reference    TANK/exon
+  4. chr12:104862518(-) 2mm+1b  CFD=0.7700  Observed=87 carriers  SLC41A2/intron   [variant chr12;104862537;A;G]
+  5. chr6:29968284(-)   1mm+2b  CFD=0.7270  Observed=484 carriers HLA-A/intergenic [variant chr6;29968288;C;T]
+  6. chr10:33753323(-)  3mm+1b  CFD=0.7110  Observed=reference    PARD3/intergenic
+  Panel sites by gene region: intergenic 57, intron 33, - 7, exon 3, CDS 1
+
+Full report: Results/sg1617-pop-1013/sg1617-pop-1013_report.zip -&gt; unzip, open report.html</pre></div>
+      </details>
+    </div>
+
+    <div class="turn">
+      <div class="who assistant sans">Claude</div>
+      <div class="bubble">
+        <p>The guide has exactly one perfect match, in BCL11A, which is the intended target for
+        this well-known guide. At this depth CRISPRme predicts about 149,000 candidate
+        off-target sites. Just under a third of them, 46,502, exist only because of a variant
+        that some people carry, so a reference-only search would not list them at all.</p>
+        <p>The strongest candidate off-target is a variant-created site in CPS1 carried by 96
+        people in the panel, scored 0.95 by CFD. It sits at the top of the recommended validation
+        panel, which is a ready-made list of about 100 sites to confirm experimentally.</p>
+        <p>The full report is in <span class="mono">sg1617-pop-1013_report.zip</span>. Open
+        <span class="mono">report.html</span> inside it: that is the version to share.</p>
+      </div>
+    </div>
+
+    <div class="callout sans">
+      CRISPRme writes the shareable report itself at the end of every search. The skill's own
+      summary script reads only small files from the run, so it finishes in about three seconds
+      on genome-wide output rather than loading a multi-gigabyte table.
+    </div>
+  </section>
+
+  <section class="scenario" id="failfast">
+    <div class="scenario-head"><span class="eyebrow">When an input is wrong</span><span class="rule"></span></div>
+    <h2>Failing in seconds instead of hours</h2>
+    <p class="lede">CRISPRme checks its inputs before the pipeline starts. That changes what a
+    fast failure means: read the report first, rather than assuming a deeper problem.</p>
+
+    <div class="turn">
+      <div class="who user sans">You</div>
+      <div class="bubble"><blockquote>Run my SaCas9 guide GCAGCATCCTCTAGAGGATG against the HGDP panel.</blockquote></div>
+    </div>
+
+    <div class="tool">
+      <details class="tool-card" open>
+        <summary><span class="label sans">background &middot; seconds later, already FAILED</span>
+          <span class="cmd">scripts/check_run_status.sh sacas9-1013</span></summary>
+        <div class="tool-body"><pre><span class="in">$ scripts/check_run_status.sh sacas9-1013</span>
+status: <span class="bad">FAILED</span>
+process: not running
+--- last 15 lines of log ---
+  [OK] Guide file: guides.txt
+  <span class="bad">[ERROR]</span> guides.txt: guide 'GCAGCATCCTCTAGAGGATGNNNNNN' is 26 nt but the PAM
+  '21bp-NNGRRT-SaCas9.txt' expects a padded length of 27 nt (protospacer + 6 nt PAM).
+Result: <span class="bad">FAILED (1 error)</span> - aborting before launching complete-search</pre></div>
+      </details>
+    </div>
+
+    <div class="turn">
+      <div class="who assistant sans">Claude</div>
+      <div class="bubble">
+        <p>Stopped in seconds rather than hours <span class="pill failed">failed</span>. Nothing
+        ran, so there is nothing to clean up.</p>
+        <p>The length does not match: this SaCas9 PAM file expects a 21-nucleotide spacer plus a
+        6-nucleotide PAM, and the guide you gave me has a 20-nucleotide spacer. CRISPRme suggests
+        adding more N characters, but that would be wrong here, because the spacer itself is one
+        base short. Can you confirm the full 21-nucleotide spacer, or should I use the 20-mer
+        SpCas9 PAM instead?</p>
+      </div>
+    </div>
+
+    <div class="callout sans">
+      Two tiers run here. A quick one always checks genome, PAM, guide and sample files, and
+      since 2.7 it treats a sample that is missing from the panel as an error. A slower,
+      opt-in pass reads every record of a new VCF, which matters when someone brings their own
+      cohort data.
+    </div>
+  </section>
+
+  <section class="scenario" id="persample">
+    <div class="scenario-head"><span class="eyebrow">Which people carry it</span><span class="rule"></span></div>
+    <h2>Per-person results and a single individual's card</h2>
+    <p class="lede">By default CRISPRme+ reports one worst-case representative per site. Asking
+    about named individuals switches the analysis mode.</p>
+
+    <div class="turn">
+      <div class="who user sans">You</div>
+      <div class="bubble"><blockquote>Which individuals in the panel actually carry these off-targets?</blockquote></div>
+    </div>
+
+    <div class="turn">
+      <div class="who assistant sans">Claude</div>
+      <div class="bubble">
+        <p>That needs a different mode. The run we did was population-level, which is lossless
+        for finding sites but reports worst-case representatives rather than people. The
+        per-person mode resolves each individual's actual pair of chromosomes, so you get named
+        carriers, confirmed pairs of variants that sit together on one chromosome copy, and exact
+        joint frequencies. Shall I re-run that way on the same guide?</p>
+      </div>
+    </div>
+
+    <div class="tool">
+      <details class="tool-card" open>
+        <summary><span class="label sans">background &middot; runs script &middot; real captured output</span>
+          <span class="cmd">scripts/analyze_results.py Results/sg1617-persample-1013</span></summary>
+        <div class="tool-body"><pre><span class="in">$ scripts/analyze_results.py Results/sg1617-persample-1013</span>
+Analysis: variant-aware, --per-sample (named carriers, CONFIRMED cis phasing)
+Variant panel: 1000G2021 (3202 people)
+
+Total off-target sites: 141101
+  found only because of a population variant (absent from the reference genome): 38919
+
+SNP+indel co-occurrence off-targets: 326 (CONFIRMED 312, PUTATIVE 14)
+SNP+SNP co-occurrence off-targets: 16943 (<span class="hl">CONFIRMED 7596</span>, PUTATIVE 9347)
+
+Samples with the most individual off-target sites (of 3202 samples in this run):
+  HG03567 (MSL/AFR): 2636 targets
+  NA19431 (LWK/AFR): 2634 targets
+  NA19114 (YRI/AFR): 2633 targets
+  HG03583 (MSL/AFR): 2611 targets
+  HG03078 (MSL/AFR): 2610 targets</pre></div>
+      </details>
+    </div>
+
+    <div class="turn">
+      <div class="who assistant sans">Claude</div>
+      <div class="bubble">
+        <p>Now the per-person numbers are real rather than upper bounds. Each person carries
+        around 2,600 of these sites at most, and the previous population-level per-person counts
+        were roughly 1.5 times higher because they assumed the worst case everywhere.</p>
+        <p>The pairs of variants are also resolved: of the 16,943 off-targets that need two
+        variants together, 7,596 are confirmed to sit on the same chromosome copy in a real
+        person. The population-level run could only call all of those possible.</p>
+      </div>
+    </div>
+
+    <div class="turn">
+      <div class="who user sans">You</div>
+      <div class="bubble"><blockquote>Can I see just NA20355's own off-targets?</blockquote></div>
+    </div>
+
+    <div class="tool">
+      <details class="tool-card">
+        <summary><span class="label sans">background &middot; checks the ID, then runs</span>
+          <span class="cmd">crisprme.py generate-personal-card --sample_id NA20355 &hellip;</span></summary>
+        <div class="tool-body"><pre><span class="in">$ grep -w NA20355 samplesIDs/hg38_1000G2021.samplesID.txt   # confirm the ID exists first</span>
+NA20355	ASW	AFR	female
+
+<span class="in">$ scripts/crisprme_cmd.sh generate-personal-card \
+    --result_dir Results/sg1617-persample-1013 \
+    --guide_seq CTAACAGTTGCTTTTATCACNNN --sample_id NA20355</span>
+<span class="in"># 18 seconds; writes into the run folder:</span>
+sg1617-persample-1013.NA20355.CTAACAGTTGCTTTTATCACNNN.private_targets.tsv   (4 sites)
+imgs/*.NA20355.personal.png   imgs/*.NA20355.private.png                   (6 plots)
+
+<span class="in">$ head -3 ...private_targets.tsv   # chrom, pos, mismatches, bulges, CFD, carrier, gene</span>
+chr2   88861063   3   2   0.236   NA20355   RPIA
+chr2   88861070   4   2   0.007   NA20355   RPIA
+chr14  105860658  4   1   0.0     NA20355   TMEM121</pre></div>
+      </details>
+    </div>
+
+    <div class="turn">
+      <div class="who assistant sans">Claude</div>
+      <div class="bubble">
+        <p>NA20355 has 4 off-target sites that nobody else in the panel carries. The strongest
+        scores 0.24, which is well below the sites in the shared validation panel, and two of the
+        four sit in the same gene, RPIA. The card also includes plots of every variant
+        off-target this person carries, not just the private ones.</p>
+      </div>
+    </div>
+
+    <div class="callout sans">
+      <strong>A silent trap the skill guards against.</strong> Given a misspelled sample ID,
+      this command writes an empty table and reports success, which looks exactly like "this
+      person has no private off-targets". The skill therefore checks the ID against the panel
+      file first.
+    </div>
+  </section>
+
+  <section class="scenario" id="nuclease">
+    <div class="scenario-head"><span class="eyebrow">A different nuclease</span><span class="rule"></span></div>
+    <h2>SaCas9 against the same population panel</h2>
+    <p class="lede">The downloadable indexes are all SpCas9. Any other nuclease needs its own
+    index, but not a rebuild of the variant data: upstream publishes the variant-enriched genome
+    separately, so only the nuclease-specific part is built.</p>
+
+    <div class="turn">
+      <div class="who user sans">You</div>
+      <div class="bubble"><blockquote>I need to screen a SaCas9 guide against the same HGDP panel. Is that possible?</blockquote></div>
+    </div>
+
+    <div class="turn">
+      <div class="who assistant sans">Claude</div>
+      <div class="bubble">
+        <p>Yes, and it does not mean rebuilding the population data. I download the prepared
+        variant-enriched genome for that panel, about 1 GB, and build just the SaCas9 index from
+        it. That takes roughly 10 minutes here, plus the search itself.</p>
+        <p>One thing to know up front: both of CRISPRme's activity scores are trained on SpCas9,
+        so SaCas9 sites get no score. The results are ranked by mismatches and bulges instead.</p>
+      </div>
+    </div>
+
+    <div class="tool">
+      <details class="tool-card">
+        <summary><span class="label sans">background &middot; three jobs in order</span>
+          <span class="cmd">download kit &rarr; build SaCas9 index &rarr; search</span></summary>
+        <div class="tool-body"><pre><span class="in"># 1. the prepared variant-enriched genome ("kit") for this panel</span>
+$ scripts/run_crisprme_job.sh exec kit-HGDP1kGP hf download lucapinello/crisprme-data \
+    build-inputs/hg38_HGDP1kGP.tar.gz --repo-type dataset --local-dir .
+<span class="in">  -&gt; 1.2 GB; unpacks to Genomes/hg38+hg38_HGDP1kGP/ and ..._INDELS/</span>
+
+<span class="in"># 2. write the SaCas9 PAM file, then build its index from that genome</span>
+$ printf 'NNNNNNNNNNNNNNNNNNNNNNNGRRT 6\n' &gt; PAMs/21bp-NNGRRT-SaCas9.txt
+$ scripts/run_crisprme_job.sh exec idx-sacas9 crispritz.py index-genome \
+    hg38+hg38_HGDP1kGP Genomes/hg38+hg38_HGDP1kGP/ PAMs/21bp-NNGRRT-SaCas9.txt -bMax 3 -th 16
+Indexing runtime: 444.4 seconds
+<span class="in">  -&gt; genome_library/NNGRRT_3_hg38+hg38_HGDP1kGP   (plus the companion indel index)</span>
+
+<span class="in"># 3. the search itself, about 35 minutes</span>
+$ scripts/run_crisprme_job.sh complete-search sacas9-HGDP1kGP-1013 \
+    --genome Genomes/hg38 --pam PAMs/21bp-NNGRRT-SaCas9.txt --guide guide_sacas9.txt \
+    --vcf vcf_HGDP1kGP.txt --samplesID samplesID_HGDP1kGP.txt --mm 4 --bDNA 1 --bRNA 1 ...</pre></div>
+      </details>
+    </div>
+
+    <div class="tool">
+      <details class="tool-card" open>
+        <summary><span class="label sans">background &middot; runs script &middot; real captured output</span>
+          <span class="cmd">scripts/analyze_results.py Results/sacas9-HGDP1kGP-1013 --top 3</span></summary>
+        <div class="tool-body"><pre><span class="in">$ scripts/analyze_results.py Results/sacas9-HGDP1kGP-1013 --top 3</span>
+Analysis: variant-aware, population-level default
+Variant panel: HGDP1kGP (4091 people)
+Nuclease/PAM: <span class="hl">SaCas9 / NNGRRT</span>
+
+Total off-target sites: 7350
+  found only because of a population variant (absent from the reference genome): 4150
+  where a variant creates a brand-new PAM site: 781
+
+Off-target site totals by population (REF = reference genome, no variant needed):
+  REF: 3200   AFR: 2327   CSA: 1741   EAS: 1714   EUR: 1556   AMR: 1513   MID: 1076   OCE: 446
+
+<span class="hl">Note: no CFD / CRISPR-Bulge scores -- both are trained on SpCas9, so for this nuclease
+the panel is ranked by mismatches+bulges (edit distance) only.</span>
+Recommended validation panel: 100 sites. Top 3:
+  1. chr22:22888224(+)  2mm+1b  (no SpCas9 score)  Observed=98 carriers  IGLL5/CDS
+  2. chr3:187745034(+)  2mm+1b  (no SpCas9 score)  Observed=1 carrier    AC072022.2/intron  [cancer-driver gene]
+  3. chr22:22888557(-)  2mm+1b  (no SpCas9 score)  Observed=62 carriers  IGLL5/intron</pre></div>
+      </details>
+    </div>
+
+    <div class="turn">
+      <div class="who assistant sans">Claude</div>
+      <div class="bubble">
+        <p>This SaCas9 guide is far cleaner than the SpCas9 one: 7,350 candidate sites against
+        about 149,000, which is what the longer, more specific PAM buys you. Over half of them,
+        4,150, exist only because of a variant.</p>
+        <p>No activity scores here, as expected, so the panel is ranked by edit distance. The top
+        sites need 2 mismatches and 1 bulge, and the first one falls in the coding sequence of
+        IGLL5 and is carried by 98 people. Worth including in any validation panel despite the
+        missing score.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="scenario" id="species">
+    <div class="scenario-head"><span class="eyebrow">A non-human genome</span><span class="rule"></span></div>
+    <h2>Pig, mouse, or any UCSC assembly</h2>
+
+    <div class="turn">
+      <div class="who user sans">You</div>
+      <div class="bubble"><blockquote>Can it do pig? I have a guide for a pig knock-in.</blockquote></div>
+    </div>
+
+    <div class="tool">
+      <details class="tool-card">
+        <summary><span class="label sans">background &middot; three jobs in order</span>
+          <span class="cmd">download genome + PAMs &rarr; build index &rarr; search</span></summary>
+        <div class="tool-body"><pre><span class="in">$ scripts/run_crisprme_job.sh download dl-susScr11 --what genome --ref susScr11 \
+    --source ucsc --path .</span>
+Downloaded genome -&gt; /DATA/Genomes/susScr11      <span class="in"># 613 files, 3.0 GB, about 5 min</span>
+
+<span class="in">$ scripts/crisprme_cmd.sh download --what pams --path .</span>
+Downloaded pams -&gt; /DATA/PAMs
+
+<span class="in">$ scripts/run_crisprme_job.sh build-index-only idx-susScr11-NGG \
+    --genome Genomes/susScr11 --pam PAMs/20bp-NGG-SpCas9.txt --bDNA 1 --bRNA 1 --thread 16 --path .</span>
+Indexing runtime: 687.9 seconds
+Index built: /DATA/genome_library/NGG_2_susScr11
+
+<span class="in">$ scripts/run_crisprme_job.sh complete-search pig-sg1-1013 --genome Genomes/susScr11 \
+    --pam PAMs/20bp-NGG-SpCas9.txt --guide guide_pig.txt --mm 4 --bDNA 1 --bRNA 1 ...</span>
+<span class="in"># about 20 minutes</span></pre></div>
+      </details>
+    </div>
+
+    <div class="tool">
+      <details class="tool-card" open>
+        <summary><span class="label sans">background &middot; runs script &middot; real captured output</span>
+          <span class="cmd">scripts/analyze_results.py Results/pig-sg1-1013 --top 3</span></summary>
+        <div class="tool-body"><pre><span class="in">$ scripts/analyze_results.py Results/pig-sg1-1013 --top 3</span>
+=== CRISPRme results summary: pig-sg1-1013 ===
+Guide: GAGTCCGAGCAGAAGAAGAANNN   Counts ranked by: CFD
+Analysis: <span class="hl">reference-only (no variant panel)</span>
+Search depth: 4 mismatches, 1 DNA / 1 RNA bulges, max 6 total edits
+
+Total off-target sites: 64918
+Breakdown by mismatch/bulge count:
+  1 mismatch(es), bulge size 0 (no bulge): 1 sites
+  1 mismatch(es), bulge size 1 (RNA bulge): 1 sites
+  2 mismatch(es), bulge size 1 (RNA bulge): 27 sites
+  ...
+
+Note: no perfect match found (a variant-only or edited on-target, or a guide/genome mismatch).
+
+Recommended validation panel: 104 sites. Top 3:
+  1. chr9:106608622(-)  4mm+1b  CFD=0.8470  Observed=-  -
+  2. chr3:69842538(-)   1mm+0b  CFD=0.5000  Observed=-  -
+  3. chr8:115487367(-)  3mm+1b  CFD=0.7570  CRISPR-Bulge=0.0010  Observed=-  -</pre></div>
+      </details>
+    </div>
+
+    <div class="turn">
+      <div class="who assistant sans">Claude</div>
+      <div class="bubble">
+        <p>Done, about 35 minutes end to end. Two things to flag.</p>
+        <p>There is <strong>no perfect match</strong> in the pig genome, so either this guide was
+        designed against a different assembly, or its target spans an edit or a variant. Worth
+        checking before you use it. There is also a single site with just one mismatch and no
+        bulge, at chr3:69,842,538, which is close enough to be a real concern.</p>
+        <p>Variant-aware searching and the annotation columns are human-only, so these results
+        are reference-only and have no gene context. I can add that if you have a pig annotation
+        file in BED format.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="scenario" id="assembly">
+    <div class="scenario-head"><span class="eyebrow">A personal genome assembly</span><span class="rule"></span></div>
+    <h2>Searching someone's own assembled genome</h2>
+    <p class="lede">When an individual's genome has been assembled rather than genotyped, there
+    is no need to infer their variants: each of the two assembled copies is their actual
+    sequence. CRISPRme searches both and then lines the results up against the reference.</p>
+
+    <div class="turn">
+      <div class="who user sans">You</div>
+      <div class="bubble"><blockquote>We have HG01255's assembly from HPRC, both copies. Can you search it directly?</blockquote></div>
+    </div>
+
+    <div class="tool">
+      <details class="tool-card">
+        <summary><span class="label sans">background &middot; fetch the individual, then search</span>
+          <span class="cmd">download --what assembly &rarr; assembly-search</span></summary>
+        <div class="tool-body"><pre><span class="in"># fetches both copies plus the files needed to map them onto hg38</span>
+$ scripts/run_crisprme_job.sh download dl-HG01255 --what assembly --sample HG01255 --path .
+
+$ scripts/run_crisprme_job.sh assembly-search hg01255-sg1617 \
+    --assembly-individual HG01255 \
+    --guide guide_sg1617.txt --pam PAMs/20bp-NRG-SpCas9.txt --mm 4 --bDNA 1 --bRNA 1 \
+    --annotation Annotations/dhs+encode_screenv4+gencode+cosmic.hg38.bed.gz \
+    --gene_annotation Annotations/gencode.protein_coding.bed.gz \
+    --output hg01255-sg1617 --thread 16
+<span class="in"># two full searches back to back, then reconciliation; budget several hours</span></pre></div>
+      </details>
+    </div>
+
+    <div class="turn">
+      <div class="who assistant sans">Claude</div>
+      <div class="bubble">
+        <p>Started. This runs a complete search on each of the two copies, then matches the
+        predictions against each other and against hg38, so plan for well over double a single
+        search. No variant panel is involved here, so there is nothing to choose on that front.</p>
+      </div>
+    </div>
+
+    <div class="tool">
+      <details class="tool-card" open>
+        <summary><span class="label sans">background &middot; output from an earlier v2.6.2 run on HG01255</span>
+          <span class="cmd">scripts/analyze_results.py Results/hg01255-sg1617_combined --top 3</span></summary>
+        <div class="tool-body"><pre><span class="in">$ scripts/analyze_results.py Results/hg01255-sg1617_combined --top 3</span>
+=== CRISPRme assembly-search combined results ===
+
+Total reconciled off-target loci: 33650
+By origin:
+  both: 30047                   -- found on both copies (equivalent to homozygous)
+  maternal_only: 2476           -- one copy only (equivalent to heterozygous)
+  paternal_only: 751            -- one copy only (equivalent to heterozygous)
+  <span class="hl">both_haplotype_private: 376</span>   -- no hg38 equivalent, but present on both copies
+                                   (invisible to any reference-based search)
+
+Top 3 highest-CFD reconciled sites:
+  chr8:51024147   CFD=0.592  origin=both  (best copy: paternal)
+  chr3:89466883   CFD=0.576  origin=both  (best copy: paternal)
+  chr4:90802939   CFD=0.533  origin=both  (best copy: paternal)
+
+Full combined report (both copies' reports inside): hg01255-sg1617_combined_report.zip</pre></div>
+      </details>
+    </div>
+
+    <div class="turn">
+      <div class="who assistant sans">Claude</div>
+      <div class="bubble">
+        <p>33,650 sites after matching the two copies. Most, 30,047, appear on both, so this
+        person carries two copies of them. About 3,200 appear on only one copy.</p>
+        <p>The most interesting group is the 376 sites that have no equivalent in the reference
+        genome at all, yet appear on both of this person's copies. No reference-based search can
+        find those, whether or not it uses a variant panel. That is the specific reason to run an
+        assembly search rather than a standard one.</p>
+      </div>
+    </div>
+
+    <div class="callout sans">
+      Checked against CRISPRme+ v2.7.9's code and against this earlier run's output, but not yet
+      re-run end to end on v2.7.9 on this server.
+    </div>
+  </section>
+
+  <section class="scenario" id="validate">
+    <div class="scenario-head"><span class="eyebrow">Cross-checking</span><span class="rule"></span></div>
+    <h2>Is CRISPRme itself finding everything?</h2>
+    <p class="lede">A separate check compares CRISPRme's results against an exhaustive search of
+    the same region, so it tests correctness rather than just whether the run completed.</p>
+
+    <div class="turn">
+      <div class="who user sans">You</div>
+      <div class="bubble"><blockquote>Before we rely on this for the grant, can you verify CRISPRme isn't missing sites?</blockquote></div>
+    </div>
+
+    <div class="tool">
+      <details class="tool-card" open>
+        <summary><span class="label sans">background &middot; two jobs &middot; real captured output</span>
+          <span class="cmd">complete-test (benchmark mode) &rarr; validate-test</span></summary>
+        <div class="tool-body"><pre><span class="in"># about 20 minutes: builds small chr22 test indexes and runs each benchmark</span>
+$ CRISPRME_ALLOW_ONDEMAND_BUILD=1 CRISPRME_SKIP_HEAVY=1 \
+    scripts/run_crisprme_job.sh complete-test bench-chr22-1013 \
+    --chrom chr22 --vcf_dataset 1000G --thread 16
+status: <span class="good">DONE</span>
+
+<span class="in"># then the comparison itself, under a minute</span>
+$ scripts/run_crisprme_job.sh validate-test validate-chr22-1013 --chrom chr22
+[cas9_sg1617] <span class="good">PASSED</span>: CRISPRme and brute-force off-target sets match.
+[cas12a_hbg] <span class="good">PASSED</span>: CRISPRme and brute-force off-target sets match.
+[cas9_sg1617_simple] SKIPPED: complete-test targets not found (this benchmark was not run).
+[cas12a_hbg_simple] SKIPPED: complete-test targets not found (this benchmark was not run).
+
+Validation summary: <span class="good">2 passed, 0 failed</span>, 2 skipped.</pre></div>
+      </details>
+    </div>
+
+    <div class="turn">
+      <div class="who assistant sans">Claude</div>
+      <div class="bubble">
+        <p>Both benchmarks match exactly, one SpCas9 and one Cas12a: on chromosome 22 with the
+        1000 Genomes data, CRISPRme found precisely the set of sites an exhaustive search finds,
+        with nothing missing and nothing extra.</p>
+        <p>The two skipped entries are the deeper benchmarks, which I left out because they need
+        a lot of memory. I can run those too if you want the complete set. Note this check uses
+        CRISPRme's older build-from-scratch path rather than the downloaded indexes, so it
+        validates the search engine rather than the index files.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="scenario" id="ranking">
+    <div class="scenario-head"><span class="eyebrow">Comparing candidates</span><span class="rule"></span></div>
+    <h2>Which of these guides looks safer?</h2>
+
+    <div class="turn">
+      <div class="who user sans">You</div>
+      <div class="bubble"><blockquote>I searched two candidate guides in the same run. Which one has fewer off-targets?</blockquote></div>
+    </div>
+
+    <div class="tool">
+      <details class="tool-card" open>
+        <summary><span class="label sans">background &middot; illustrative output</span>
+          <span class="cmd">scripts/analyze_results.py Results/guide-comparison-1</span></summary>
+        <div class="tool-body"><pre><span class="in">$ scripts/analyze_results.py Results/guide-comparison-1</span>
+=== Guide comparison (2 guides, CFD ranking) ===
+Guide                         Total off-targets  0-2mm off-targets  Variant-only
+CTAACAGTTGCTTTTATCACNNN                     2111                 11            26
+GACCTTCAGTTGCTTTTATCNNN                     2547                 47            64
+
+Lowest apparent risk: CTAACAGTTGCTTTTATCACNNN (fewest near-exact [0-2 mismatch] predicted
+off-targets -- generally the strongest signal for real off-target activity). This is a quick
+ranking from already-computed counts, not a formal specificity score: it doesn't weigh
+individual CFD/CRISPR-Bulge scores or genomic context (promoters, coding exons) of specific
+sites -- treat it as a starting point and check each guide's report.html.</pre></div>
+      </details>
+    </div>
+
+    <div class="turn">
+      <div class="who assistant sans">Claude</div>
+      <div class="bubble">
+        <p>The first guide looks like the safer candidate: 11 near-exact off-targets against 47,
+        and fewer overall. Near-exact sites, within two mismatches, are the ones most likely to
+        be cut in practice, which is why they carry the most weight here.</p>
+        <p>This is a quick comparison from counts CRISPRme has already worked out. It does not
+        weigh individual site scores or whether any of those sites land in a gene, so treat it as
+        a starting point. Want the full breakdown for either guide?</p>
+      </div>
+    </div>
+  </section>
+
+  <div class="summary-box">
+    <h2 class="sans">What the skill handles</h2>
+    <ul class="sans">
+      <li><strong>Install and data setup.</strong> Checks for existing installs first, then sets
+      up the official v2.7.9 container on Apptainer, Docker or a source install, and downloads
+      the reference data and variant panel as background jobs.</li>
+      <li><strong>Plain-language searches.</strong> Asks only about the choices that matter,
+      states its assumptions for the rest, and estimates the cost before anything expensive.</li>
+      <li><strong>Trustworthy job status.</strong> Nothing blocks the conversation, and the
+      status check catches the cases where CRISPRme reports success without having done the
+      work.</li>
+      <li><strong>Results in words.</strong> Points at CRISPRme's own shareable report and gives
+      a terminal summary: how many sites exist only because of population variants, whether the
+      on-target is unambiguous, which populations carry the most risk, and a ready-made
+      validation panel.</li>
+      <li><strong>Per-person answers.</strong> Switches to per-individual mode when the question
+      is who carries a site, and builds a card for one named individual.</li>
+      <li><strong>Beyond the defaults.</strong> Other nucleases, non-human genomes and a user's
+      own cohort data, each with the real time and disk cost stated up front.</li>
+      <li><strong>Personal assemblies.</strong> Searches both copies of an assembled genome and
+      surfaces the sites no reference-based search can see.</li>
+      <li><strong>Correctness checking.</strong> Compares CRISPRme's output against an
+      exhaustive search on a test region.</li>
+    </ul>
+  </div>
+</main>
+
+<footer class="page">
+  CRISPRme skill &mdash; <span class="mono">.claude/skills/crisprme/</span> &mdash; written for
+  CRISPRme+ v2.7.9, tested on the lab server 2026-10-13.
+</footer>

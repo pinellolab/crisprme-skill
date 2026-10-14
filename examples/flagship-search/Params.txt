@@ -1,0 +1,14 @@
+Genome_selected	hg38
+Genome_ref	hg38
+Genome_idx	NRG_2_hg38+hg38_1000G2021
+Pam	NRG
+Max_bulges	1
+Mismatches	4
+DNA	1
+RNA	1
+Max_total_edits	6
+Annotation	annotation.sorted.bed.gz
+Nuclease	SpCas9
+Ref_comp	True
+Scorer	crispr-bulge
+Compute_backend	cpu
