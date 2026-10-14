@@ -47,7 +47,7 @@ Both bundled annotation files. COSMIC excluded, which is the licence-safe defaul
 | Off-target sites | **205,415** |
 | Created by a population variant, absent from the reference genome | **97,879 (48%)** |
 | Where a variant creates a new PAM site | 10,837 |
-| Perfect (0-mismatch, 0-bulge) matches | **1** — an unambiguous on-target |
+| Perfect (0-mismatch, 0-bulge) matches | **1** — a lone perfect match, so no ambiguity about which site is the presumed on-target |
 | Recommended validation panel | 101 sites |
 | Need a SNP and an indel together | 642 (632 confirmed on one chromosome copy) |
 | Need two SNPs together | 342,396 (all unconfirmed at population level) |

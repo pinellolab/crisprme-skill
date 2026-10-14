@@ -167,7 +167,8 @@ genome-wide variant-aware search — produced by a fresh Claude Code session giv
 one-line request, not by a hand-assembled command. Searching 4,091 people's genomes at the
 version's recommended depth, it found 205,415 off-target sites, of which **97,879 (48%) do not
 exist in the reference genome** and are only visible because the search covers population
-variation, plus one unambiguous on-target and a 101-site recommended validation panel.
+variation, plus a lone perfect match in `BCL11A` — which CRISPRme treats as the presumed
+on-target, since it cannot know the intended site — and a 101-site recommended validation panel.
 
 The directory ships CRISPRme's own run manifest and parameters, that validation panel, the
 per-guide summary table, and the skill's plain-language summary. Its README has the full
