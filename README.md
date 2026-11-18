@@ -5,7 +5,7 @@ A [Claude Code](https://claude.com/claude-code) **Agent Skill** that runs
 install it from scratch, run variant- and haplotype-aware off-target searches, and turn the
 results into a readable risk summary.
 
-Written for and tested against **CRISPRme+ v2.7.9**.
+Written for and tested against **CRISPRme+ v2.8.1**.
 
 The skill is a document plus a handful of scripts. It does not wrap or reimplement CRISPRme:
 every command it runs is a real `crisprme.py` subcommand, and CRISPRme's own outputs (including
@@ -20,7 +20,7 @@ success.
 
 | Ask | What happens |
 |---|---|
-| "Set up CRISPRme for me" | Scans for existing installs first, then registers the official v2.7.9 container (Apptainer, Docker, or an existing source install) and downloads the reference data and a variant index as background jobs |
+| "Set up CRISPRme for me" | Scans for existing installs first, then registers the official v2.8.1 container (Apptainer, Docker, or an existing source install) and downloads the reference data and a variant index as background jobs |
 | "Check this guide for off-targets" | Asks only about the choices that matter, states its assumptions for the rest, estimates the cost of deep searches, and runs `complete-search` as a background job |
 | "What did it find?" | Points at CRISPRme's own report and prints a plain-language summary: counts, on-target ambiguity, variant-driven sites, co-occurring variants, and the recommended validation panel |
 | "Who carries these off-targets?" | Switches to `--per-sample` analysis; `generate-personal-card` for one named individual |
@@ -65,7 +65,7 @@ CRISPRme up — or run the installer yourself:
 
 ```bash
 cd /path/to/your/crisprme-data-dir
-~/.claude/skills/crisprme/scripts/install_crisprme.sh      # pulls the v2.7.9 image
+~/.claude/skills/crisprme/scripts/install_crisprme.sh      # pulls the v2.8.1 image
 ```
 
 That writes a `.crisprme_runtime` file recording how to run CRISPRme in this directory. Every
@@ -92,54 +92,76 @@ blocking the conversation.
 
 ---
 
-## Tested against v2.7.9
+## Tested against v2.8.1
 
 Every route below was executed end-to-end through this skill's own scripts on a shared Linux
-server (88 cores, 1 TB RAM), using the published `pinellolab/crisprme:v2.7.9` image under
-Apptainer, on 2026-10-13. "Executed" means the commands and scripts were run and checked; the
-parameters were chosen by hand rather than by a Claude session, except for the search in
-[`examples/flagship-search/`](examples/flagship-search/), which a session drove from a one-line
-request.
+server (88 cores, 1 TB RAM), using the published `pinellolab/crisprme:v2.8.1` image under
+Apptainer, on 2026-11-11. "Executed" means the commands and scripts were run and their output
+checked. Other heavy jobs were running on the same machine throughout, so the wall times are
+upper bounds rather than benchmarks.
 
 | Route | Result | Wall time |
 |---|---|---|
+| Container image pull **through the installer** (`install_crisprme.sh`, Apptainer) | pass | 6 min, 4.51 GB `.sif` |
+| `complete-search`, genome-wide variant-aware, **per-sample selected automatically** | pass | 2 h 18 m |
+| `complete-search`, reference-only, single chromosome | pass | 2 m 31 s |
+| `complete-test --chrom chr22` (prebuilt-index smoke) | pass | 1 m 22 s |
+| `complete-test` benchmark mode (6 benchmarks) + `validate-test` | **6 passed, 0 failed, 0 skipped** | 28 min + 3.5 s |
+| `targets-scoring` — Cas-OFFinder input, TSV input, and the variant carrier overlay | pass; CFD reproduced the genome-wide run's scores exactly on 30 sites | 25 s |
+| `build-index-only`, PAM-less (all-`N`) index | pass | 2 m 18 s |
+| `complete-search --prune-pam` off that index | pass; `integrated_results.tsv` **byte-identical** to a dedicated-index search | 4 m 24 s |
+| `--report-full` against the default slim report | pass | — |
+| `CRISPRME_TMPDIR` relocation of scratch folders | pass | — |
+| `analyze_results.py` on the genome-wide run | pass | seconds |
+
+### Checked on v2.7.9, not re-run on v2.8.1
+
+These passed on 2026-10-13 against v2.7.9 and have not been repeated. Their flags and output were
+re-read against the 2.8.1 source, but treat the timings as indicative:
+
+| Route | Result on v2.7.9 | Wall time |
+|---|---|---|
 | Runtime registration from an existing image (`install_crisprme.sh --sif`) | pass | seconds |
-| Container image pull (`apptainer pull`, run directly — not via the installer) | pass | 5 min, 4.9 GB → 4.2 GB `.sif` |
-| `download --what index` (`NRG_3_hg38+hg38_HGDP1kGP`, the new default) | pass | 18 min, ~87 GB |
+| `download --what index` (`NRG_3_hg38+hg38_HGDP1kGP`, the default) | pass | 18 min, ~87 GB |
 | `download --what genome --source ucsc` (pig, `susScr11`) | pass | 9 min, 3.0 GB |
 | `download --what pams` | pass | seconds |
 | `scorer-env check` (CRISPR-Bulge ML scorer) | pass, compute self-test OK | seconds |
-| `complete-test` smoke test, genome-wide, variant index | pass | 14 min |
-| `complete-search`, genome-wide variant-aware, population-level | pass | 59 min |
-| `complete-search`, same guide with `--per-sample` | pass | 61 min |
+| `complete-search`, genome-wide, explicit `--population-level` | pass | 59 min |
 | `generate-personal-card` for one individual | pass | 18 s |
-| `complete-test` (benchmark mode) + `validate-test` | 2 benchmarks passed, 0 failed | 21 min + 6 s |
 | `build-index-only` on a non-human genome (pig), then search | pass | 12 min + 21 min |
 | SaCas9 index from the published kit, then variant-aware search | pass | 8 min + 33 min |
-| `analyze_results.py` on every run above | pass | 3 s, 16 MB RAM on genome-wide output |
 
 ### Known limits
 
-- **`assembly-search` has not been run on v2.7.9.** It is documented from the source and checked
-  against the output of an earlier real run (v2.6.2, HPRC HG01255), so expect rough edges.
-- **`download --what all` and `--what assembly` are untested.** The `--what index`, `--what genome`
-  and `--what pams` modes were exercised.
+- **`assembly-search` has not been run through this skill.** It is documented from the source and
+  checked against the output of an earlier real run (v2.6.2, HPRC HG01255), so expect rough edges.
+  It also **requires v2.8.1 or newer**: on older releases the registered-bundle layout makes every
+  haplotype's index collide on the name `genome`, so the second haplotype silently reuses the
+  first one's results. SKILL.md explains the exposure and the fix.
+- **`download --what all` and `--what assembly` are untested.** The `--what index`,
+  `--what genome` and `--what pams` modes were exercised.
 - **GPU scoring is unavailable through the wrapper**, which does not pass a GPU into the
   container, so scoring runs on CPU.
 - **Non-SpCas9 nucleases get no CFD or CRISPR-Bulge score** — both models are SpCas9-trained — so
   those runs are ranked by edit distance alone. A missing score is not a low score.
+- **`targets-scoring`'s carrier overlay covers SNVs only.** It reads the index's registry tier, so
+  indels are absent and an indel-driven site can look variant-free.
 
 ---
 
 ## Example
 
 [`examples/flagship-search/`](examples/flagship-search/) holds real, unedited output from a
-genome-wide variant-aware search — produced by a fresh Claude Code session given a single
-one-line request, not by a hand-assembled command. Searching 4,091 people's genomes at the
-version's recommended depth, it found 205,415 off-target sites, of which **97,879 (48%) do not
-exist in the reference genome** and are only visible because the search covers population
-variation, plus a lone perfect match in `BCL11A` — which CRISPRme treats as the presumed
-on-target, since it cannot know the intended site — and a 101-site recommended validation panel.
+genome-wide variant-aware search, run on the command a fresh Claude Code session produced from a
+single one-line request. Searching 4,091 people's genomes at the version's recommended depth, it
+found 170,659 off-target sites, of which **63,123 (37%) do not exist in the reference genome** and
+are only visible because the search covers population variation, plus a lone perfect match in
+`BCL11A` — which CRISPRme treats as the presumed on-target, since it cannot know the intended
+site — and a 101-site recommended validation panel, 48 of whose sites are variant-created.
+
+Because the default analysis mode is now per-sample on a phased index, most of its co-occurrence
+findings are *proven* rather than hypothetical: 11,754 of 11,968 two-SNP off-targets are backed by
+phasing placing both variants on one chromosome copy in a real person.
 
 The directory ships CRISPRme's own run manifest and parameters, that validation panel, the
 per-guide summary table, and the skill's plain-language summary. Its README has the full
@@ -148,14 +170,14 @@ provenance, the exact command, and what each number means.
 ## Documentation
 
 - **[`SKILL.md`](SKILL.md)** — the operational document Claude follows. It is also the most
-  complete written account of how to run CRISPRme+ v2.7.9 on a shared server.
+  complete written account of how to run CRISPRme+ v2.8.1 on a shared server.
 - **Upstream**: [`pinellolab/crisprme-plus`](https://github.com/pinellolab/crisprme-plus). The
   skill defers to CRISPRme's own documentation for the science and the file formats; it does not
   duplicate them.
 
 ## Keeping up with upstream
 
-This skill targets **v2.7.9**. If `scripts/crisprme_cmd.sh --version` reports something else,
+This skill targets **v2.8.1**. If `scripts/crisprme_cmd.sh --version` reports something else,
 flags and defaults may have moved — confirm with `<subcommand> --help` and upstream's
 `CHANGELOG.md` before relying on this document.
 

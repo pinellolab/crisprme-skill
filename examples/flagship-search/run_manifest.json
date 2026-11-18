@@ -1,13 +1,14 @@
 {
   "counts": {
-    "off_targets": 205415,
+    "off_targets": 170659,
     "on_target_perfect_matches": 1,
     "recommended_panel_size": 101,
-    "total_sites": 205416,
-    "variant_created_off_targets": 97879
+    "total_sites": 170660,
+    "variant_created_off_targets": 63123
   },
-  "crispritz_note": "search-engine (CRISPRitz v2.8.3) version is recorded in the build. See Params.txt for the exact run parameters.",
-  "crisprme_version": "2.7.9",
+  "crispritz_note": "search-engine (CRISPRitz) version is resolved from the engine on PATH; null when it could not be determined. See Params.txt for the exact run parameters.",
+  "crispritz_version": "2.9.1",
+  "crisprme_version": "2.8.1",
   "database": {
     "databases": {
       "HGDP1kGP": 4091
@@ -15,14 +16,14 @@
     "n_indels": 17192381,
     "n_records": 125180264
   },
-  "generated_date": "2026-10-14",
+  "generated_date": "2026-11-11",
   "genome": "hg38",
   "guides": [
     "CTAACAGTTGCTTTTATCACNNN"
   ],
   "nuclease": "SpCas9",
   "pam": "NRG",
-  "report_generator": "v2.7.9",
+  "report_generator": "v2.8.1",
   "search": {
     "bulges_dna": "1",
     "bulges_rna": "1",
