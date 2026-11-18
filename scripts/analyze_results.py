@@ -173,6 +173,38 @@ def run_command_line(results_dir, report):
     return ""
 
 
+def resolve_search_mode(results_dir, manifest, cmd):
+    """Which analysis mode produced this run: "per-sample" or "population-level".
+
+    The command line is NOT a reliable signal. Since 2.8.0 `complete-search` auto-selects
+    per-sample on a genotyped+phased index (the default HGDP1kGP panel is one) with no flag
+    on the command line, so looking for `--per-sample` would mislabel a default run. CRISPRme
+    records the mode it resolved in `<results_dir>/.search_mode`, which on 2.8.1 is the ONLY
+    in-result record of it: the report manifest does not carry a `search_mode` key (verified
+    on a 2.8.1 genome-wide per-sample run). The manifest is still read first in case a later
+    release adds one. The legacy 2.5.3 "fast"/"full" aliases and the fallback mirror
+    generate_report.py: a missing marker means population-level (true for every result dir
+    written before the marker existed).
+    """
+    mode = (manifest or {}).get("search_mode")
+    if not mode:
+        marker = os.path.join(results_dir, ".search_mode")
+        try:
+            with open(marker) as fh:
+                mode = fh.read()
+        except OSError:
+            mode = ""
+    mode = (mode or "").strip().lower()
+    if mode in ("per-sample", "full"):
+        return "per-sample"
+    if mode in ("population-level", "fast"):
+        return "population-level"
+    # No marker (pre-2.5.4 run, or a dir written by something else): fall back to the flags.
+    if "--per-sample" in cmd:
+        return "per-sample"
+    return "population-level"
+
+
 def print_run_header(results_dir, job_name, report):
     manifest = report.manifest() if report is not None else {}
     cmd = run_command_line(results_dir, report)
@@ -187,10 +219,10 @@ def print_run_header(results_dir, job_name, report):
     variant_aware = " --vcf " in f" {cmd} " or bool(db)
     if not variant_aware:
         mode = "reference-only (no variant panel)"
-    elif "--per-sample" in cmd:
-        mode = "variant-aware, --per-sample (named carriers, CONFIRMED cis phasing)"
+    elif resolve_search_mode(results_dir, manifest, cmd) == "per-sample":
+        mode = "variant-aware, per-sample (named carriers, CONFIRMED cis phasing)"
     else:
-        mode = ("variant-aware, population-level default (worst-case representative per site; "
+        mode = ("variant-aware, population-level (worst-case representative per site; "
                 "per-person haplotypes not resolved)")
     print(f"CRISPRme version: {version or 'unknown'}")
     print(f"Analysis: {mode}")
@@ -225,20 +257,65 @@ def print_perfect_match_check(manifest, guide_rows):
         print("Note: no perfect match found (a variant-only or edited on-target, or a guide/genome mismatch).\n")
 
 
-def print_cooccurrence(report):
-    printed = False
-    for member, label in (("data/indel_snp_cooc.tsv", "SNP+indel"), ("data/snp_snp_cooc.tsv", "SNP+SNP")):
-        if not report.has(member):
+def count_phase_in_result_dir(results_dir, suffix):
+    """Count the Phase column across CRISPRme's per-chromosome co-occurrence sidecars.
+
+    Since 2.7.10 `report.zip` is SLIM by default and no longer bundles the (often hundreds of
+    MB) `snp_snp_cooc` table -- it ships only under `--report-full`. The per-chromosome
+    sidecars stay in the result directory either way (the default cleanup keeps them so a
+    later `generate-report --report-full` can rebuild the bundle), so read those instead of
+    reporting nothing. Returns (counts, total, n_files).
+    """
+    counts, total, paths = {}, 0, sorted(glob.glob(os.path.join(results_dir, f"*{suffix}")))
+    for path in paths:
+        try:
+            with open(path, encoding="utf-8", errors="replace") as fh:
+                # These sidecars carry a multi-line '#' preamble documenting the columns, and
+                # the column header is the LAST '#' line before the first data row (itself
+                # '#'-prefixed, e.g. '#Chromosome\tPosition\t...'). Counting from the first
+                # line instead would treat prose as the header and the preamble as data rows.
+                idx, prev_comment, in_data = None, None, False
+                for line in fh:
+                    line = line.rstrip("\n")
+                    if not line:
+                        continue
+                    if line.startswith("#") and not in_data:
+                        prev_comment = line
+                        continue
+                    if not in_data:
+                        in_data = True
+                        header = [h.lstrip("#").strip() for h in (prev_comment or "").split("\t")]
+                        idx = next((header.index(c) for c in ("Phase", "phase") if c in header), None)
+                    total += 1
+                    row = line.split("\t")
+                    key = row[idx] if idx is not None and idx < len(row) else "?"
+                    counts[key] = counts.get(key, 0) + 1
+        except OSError:
             continue
+    return counts, total, len(paths)
+
+
+def print_cooccurrence(report, results_dir):
+    printed = False
+    for member, label, suffix in (("data/indel_snp_cooc.tsv", "SNP+indel", ".indel_snp_cooc.tsv"),
+                                  ("data/snp_snp_cooc.tsv", "SNP+SNP", ".snp_snp_cooc.tsv")):
+        source = ""
+        if report is not None and report.has(member):
+            phases, total = report.count_column(member, ("phase", "Phase"))
+        else:
+            # slim report (the default since 2.7.10): fall back to the per-chromosome sidecars
+            phases, total, n_files = count_phase_in_result_dir(results_dir, suffix)
+            if not n_files:
+                continue
+            source = f" [from {n_files} per-chromosome files; not bundled in the slim report]"
         printed = True
-        phases, total = report.count_column(member, ("phase", "Phase"))
         detail = f" ({', '.join(f'{k} {v}' for k, v in sorted(phases.items()))})" if total else ""
-        print(f"{label} co-occurrence off-targets (need two variants together): {total}{detail}")
+        print(f"{label} co-occurrence off-targets (need two variants together): {total}{detail}{source}")
     if not printed:
         return
     print("  (CONFIRMED = phasing proves both variants sit on one chromosome copy in a real person;"
-          " PUTATIVE = possible but unproven -- population-level runs report every SNP+SNP case as"
-          " PUTATIVE; --per-sample resolves them)\n")
+          " PUTATIVE = possible but unproven. Phasing comes from the index, not the analysis mode:"
+          " a sites-only or unphased panel can only report PUTATIVE.)\n")
 
 
 def print_panel(report, top_n):
@@ -451,7 +528,7 @@ def main():
     print(f"=== CRISPRme results summary: {job_name} ===")
     print(f"Guide: {guide}   Counts ranked by: {label}")
     manifest, cmd = print_run_header(results_dir, job_name, report)
-    per_sample = "--per-sample" in cmd
+    per_sample = resolve_search_mode(results_dir, manifest, cmd) == "per-sample"
     variant_aware = " --vcf " in f" {cmd} "
     if len(guides) > 1:
         manifest = {}  # the manifest's counts are run-wide; use this guide's own summary instead
@@ -505,7 +582,7 @@ def main():
             print()
 
     if report is not None:
-        print_cooccurrence(report)
+        print_cooccurrence(report, results_dir)
 
     if os.path.isfile(summary_samples_path) and per_sample:
         all_rows, top_samples = read_summary_by_samples(summary_samples_path)
