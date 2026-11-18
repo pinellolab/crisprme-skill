@@ -7,7 +7,7 @@
 # when a Docker daemon is reachable, otherwise Apptainer/Singularity (typical on HPC, no root).
 #
 # Usage (run from the data directory):
-#   install_crisprme.sh [--runtime docker|apptainer|native] [--version v2.7.9]
+#   install_crisprme.sh [--runtime docker|apptainer|native] [--version v2.8.1]
 #                       [--sif <existing .sif>] [--env-prefix <conda env prefix>] [--force]
 #   --sif         reuse an already-pulled Apptainer image instead of pulling a new one
 #   --env-prefix  (native) an existing conda env with CRISPRme+ installed from source
@@ -16,7 +16,7 @@ set -euo pipefail
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 CONFIG_FILE=".crisprme_runtime"
-VERSION="v2.7.9"
+VERSION="v2.8.1"
 RUNTIME=""
 SIF=""
 ENV_PREFIX=""
@@ -100,7 +100,9 @@ echo "CRISPRme runtime recorded in $(pwd -P)/$CONFIG_FILE:"
 echo "crisprme.py --version: ${ver:-<failed — check the runtime above>}"
 case "$ver" in
   v2.[01].*) echo "WARNING: this is the legacy 2.1.x line, not CRISPRme+ (2.2+). The skill assumes CRISPRme+." ;;
-  v2.[2-5].*) echo "WARNING: CRISPRme+ older than 2.6 (old search defaults, CRISTA scorer, retired default index). The skill is written for 2.7.x." ;;
+  v2.[2-5].*) echo "WARNING: CRISPRme+ older than 2.6 (old search defaults, CRISTA scorer, retired default index). The skill is written for 2.8.x." ;;
+  v2.[67].*) echo "WARNING: CRISPRme+ older than 2.8. The skill is written for 2.8.x: on a phased index 2.8.0 auto-selects --per-sample (older releases default to population-level), report.zip is slim by default, and CFD penalizes bulges by position." ;;
+  v2.8.0*) echo "WARNING: CRISPRme+ 2.8.0 is missing the 2.8.1 indel correctness fixes (an indel off-target could be reported on every chromosome, an RNA-bulge indel one base early) and the complete-test/validate-test fixes. The skill is written for 2.8.1." ;;
 esac
 
 cat <<EOF
